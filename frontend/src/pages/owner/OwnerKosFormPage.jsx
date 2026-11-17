@@ -5,6 +5,7 @@ import AppLayout from '../../components/AppLayout';
 import LocationPickerMap from '../../components/LocationPickerMap';
 import { KosImage, Modal, Spinner } from '../../components/Ui';
 import { useToast } from '../../context/ToastContext';
+import '../../styles/owner/pages.css';
 
 export default function OwnerKosFormPage() {
   const { id } = useParams();

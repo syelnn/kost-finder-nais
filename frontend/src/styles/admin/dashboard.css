@@ -1,0 +1,947 @@
+/* ==== ADMIN - isi halaman: tombol, form, card, tabel, modal, kartu statistik, grafik ==== */
+/* ---------- Komponen umum ---------- */
+:where(.admin-shell) .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 16px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  text-decoration: none !important;
+}
+
+:where(.admin-shell) .btn:focus-visible {
+  outline: 3px solid var(--primary-100);
+  outline-offset: 2px;
+}
+
+:where(.admin-shell) .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+:where(.admin-shell) .btn-primary {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+:where(.admin-shell) .btn-primary:hover:not(:disabled) {
+  background: var(--primary-600);
+}
+
+:where(.admin-shell) .btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+:where(.admin-shell) .btn-secondary:hover:not(:disabled) {
+  background: #f1f5f9;
+}
+
+:where(.admin-shell) .btn-danger {
+  background: var(--danger);
+  color: #ffffff;
+}
+
+:where(.admin-shell) .btn-danger:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+:where(.admin-shell) .btn-ghost {
+  background: var(--primary-50);
+  color: var(--primary);
+  border-color: var(--primary-100);
+}
+
+:where(.admin-shell) .btn-ghost:hover:not(:disabled) {
+  background: var(--primary-100);
+}
+
+:where(.admin-shell) .btn-sm {
+  min-height: 36px;
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+:where(.admin-shell) .btn-block {
+  width: 100%;
+}
+
+:where(.admin-shell) .btn-icon {
+  min-width: 36px;
+  min-height: 36px;
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+}
+
+:where(.admin-shell) .form-group {
+  margin-bottom: 16px;
+}
+
+:where(.admin-shell) .form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+:where(.admin-shell) .form-control {
+  width: 100%;
+  min-height: 44px;
+  padding: 9px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+:where(.admin-shell) .form-control:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-100);
+}
+
+:where(.admin-shell) .form-control.is-invalid {
+  border-color: var(--danger);
+}
+
+:where(.admin-shell) .form-control[readonly] {
+  background: #f1f5f9;
+  color: var(--text-muted);
+}
+
+:where(.admin-shell) textarea.form-control {
+  min-height: 90px;
+  resize: vertical;
+}
+
+:where(.admin-shell) .field-error {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--danger);
+  font-weight: 600;
+}
+
+:where(.admin-shell) .form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+:where(.admin-shell) .card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+:where(.admin-shell) .badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+:where(.admin-shell) .badge-success {
+  background: var(--success-bg);
+  color: #15803d;
+}
+
+:where(.admin-shell) .badge-warning {
+  background: var(--warning-bg);
+  color: #b45309;
+}
+
+:where(.admin-shell) .badge-danger {
+  background: var(--danger-bg);
+  color: #b91c1c;
+}
+
+:where(.admin-shell) .badge-info {
+  background: var(--info-bg);
+  color: #0369a1;
+}
+
+:where(.admin-shell) .badge-neutral {
+  background: var(--neutral-bg);
+  color: #334155;
+}
+
+:where(.admin-shell) .badge-teal {
+  background: var(--primary-100);
+  color: var(--primary);
+}
+
+:where(.admin-shell) .badge-pink {
+  background: #fce7f3;
+  color: #be185d;
+}
+
+:where(.admin-shell) .brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary);
+  text-decoration: none !important;
+}
+
+:where(.admin-shell) .brand-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--primary);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+:where(.admin-shell) .table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+:where(.admin-shell) .table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+:where(.admin-shell) .table th,
+:where(.admin-shell) .table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+:where(.admin-shell) .table th {
+  background: #f8fafc;
+  font-weight: 700;
+  color: var(--text-muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+:where(.admin-shell) .table tbody tr:hover {
+  background: #f8fafc;
+}
+
+:where(.admin-shell) .pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 14px;
+}
+
+:where(.admin-shell) .pagination-info,
+:where(.admin-shell) .pagination-page {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+:where(.admin-shell) .pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+:where(.admin-shell) .modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+:where(.admin-shell) .modal-card {
+  width: 100%;
+  max-width: 480px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+:where(.admin-shell) .modal-header,
+:where(.admin-shell) .modal-footer {
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+
+:where(.admin-shell) .modal-footer {
+  border-top: 1px solid var(--border);
+  border-bottom: none;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+:where(.admin-shell) .modal-body {
+  padding: 18px;
+}
+
+:where(.admin-shell) .spinner-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 36px;
+  color: var(--text-muted);
+}
+
+:where(.admin-shell) .spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid var(--primary-100);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+:where(.admin-shell) .empty-state {
+  text-align: center;
+  padding: 32px 16px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  background: #f8fafc;
+}
+
+:where(.admin-shell) .empty-icon {
+  font-size: 32px;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+:where(.admin-shell) .star-rating {
+  display: inline-flex;
+  gap: 2px;
+}
+
+:where(.admin-shell) .star-on {
+  color: #f59e0b;
+}
+
+:where(.admin-shell) .star-off {
+  color: #cbd5e1;
+}
+
+:where(.admin-shell) .star-btn {
+  background: transparent;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+
+@media (max-width: 768px) {
+  :where(.admin-shell) .form-row {
+      grid-template-columns: 1fr;
+    }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Header halaman, kartu statistik & grafik ---------- */
+:where(.admin-shell) .page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+:where(.admin-shell) .stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+:where(.admin-shell) .stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+
+:where(.admin-shell) .stat-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+:where(.admin-shell) .stat-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-top: 4px;
+}
+
+:where(.admin-shell) .stat-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+:where(.admin-shell) .chart-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+:where(.admin-shell) .stat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+@media (max-width: 1024px) {
+  :where(.admin-shell) .stat-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+  :where(.admin-shell) .chart-grid {
+      grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+  :where(.admin-shell) .stat-grid {
+      grid-template-columns: 1fr;
+    }
+}
+
+/* ---------- Konten & komponen yang ikut tema ---------- */
+.admin-shell .dashboard-main {
+  max-width: 1440px;
+  padding: 24px 28px;
+}
+
+.admin-shell .page-header h1 {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.admin-shell .page-header .btn {
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.admin-shell .card {
+  padding: 20px;
+  box-shadow: none;
+}
+
+.admin-shell .card h3 {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.admin-shell .table th {
+  background: #f8fafc;
+}
+
+.admin-shell .table tbody tr:hover {
+  background: #f8faff;
+}
+
+.admin-shell .stat-grid {
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.admin-shell .stat-card {
+  padding: 18px 20px;
+  border-radius: 14px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.admin-shell .stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.1);
+}
+
+.admin-shell .stat-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.stat-head .icon {
+  color: var(--text-muted);
+}
+
+.admin-shell .stat-value {
+  margin: 10px 0 4px;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text);
+}
+
+.admin-shell .stat-sub {
+  font-size: 13px;
+}
+
+.admin-shell .chart-grid {
+  gap: 16px;
+}
+
+.admin-shell .chart-grid .card > p {
+  margin-bottom: 14px;
+  font-size: 13px !important;
+}
+
+@media (max-width: 768px) {
+  .admin-shell .dashboard-main {
+    padding: 16px 14px;
+  }
+  .admin-shell .page-header h1 {
+    font-size: 22px;
+  }
+}
+
+/* ---------- Ukuran ringkas untuk semua halaman Admin ---------- */
+.admin-shell .btn {
+  min-height: 40px;
+  font-size: 14px;
+}
+
+.admin-shell .btn-sm {
+  min-height: 34px;
+  font-size: 13px;
+}
+
+.admin-shell .form-control {
+  min-height: 40px;
+}
+
+.admin-shell .form-group label {
+  font-size: 13px;
+}
+
+.admin-shell .table th,
+.admin-shell .table td {
+  padding: 10px 14px;
+}
+
+/* ---------- Responsif ---------- */
+@media (max-width: 1280px) {
+  .admin-shell .stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-shell .page-header > div:last-child {
+    width: 100%;
+  }
+  .admin-shell .page-header .btn {
+    flex: 1;
+  }
+  .admin-shell .stat-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Dropdown (select) modern, hanya CSS ----------
+   Memakai "customizable select" (appearance: base-select) di Chrome/Edge 135+.
+   Browser yang belum mendukung otomatis memakai tampilan select bawaan. */
+@supports (appearance: base-select) {
+  .admin-shell select.form-control,
+  .admin-shell select.form-control::picker(select) {
+    appearance: base-select;
+  }
+
+  .admin-shell select.form-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 12px 8px 14px;
+    border-radius: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  }
+
+  .admin-shell select.form-control:hover {
+    background: var(--primary-50);
+    border-color: var(--primary-100);
+  }
+
+  .admin-shell select.form-control:focus-visible,
+  .admin-shell select.form-control:open {
+    outline: none;
+    background: var(--surface);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-100);
+  }
+
+  .admin-shell select.form-control::picker-icon {
+    color: var(--text-muted);
+    transition: rotate 0.2s ease;
+  }
+
+  .admin-shell select.form-control:open::picker-icon {
+    rotate: 180deg;
+    color: var(--primary);
+  }
+
+  .admin-shell select.form-control::picker(select) {
+    min-width: anchor-size(width);
+    max-height: 268px;
+    margin: 6px 0;
+    padding: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
+  }
+
+  .admin-shell select.form-control option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    text-align: left;
+    padding: 9px 10px;
+    font-size: 14px;
+    color: var(--text);
+    border-radius: 9px;
+    cursor: pointer;
+  }
+
+  .admin-shell select.form-control option:hover,
+  .admin-shell select.form-control option:focus-visible {
+    outline: none;
+    background: var(--primary-50);
+  }
+
+  .admin-shell select.form-control option:checked {
+    font-weight: 600;
+    color: var(--primary-600);
+    background: var(--primary-50);
+  }
+
+  /* centang dipindah ke kanan supaya teks opsi selalu rata kiri */
+  .admin-shell select.form-control option::checkmark {
+    order: 1;
+    margin-left: auto;
+    color: var(--primary);
+  }
+}
+
+/* ---------- Grid filter Laporan: 3 kolom -> 2 kolom -> 1 kolom ---------- */
+.admin-shell .filter-grid.form-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .admin-shell .filter-grid.form-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .admin-shell .filter-grid.form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Tabel ringkas (Verifikasi Owner) ----------
+   Teks tidak turun baris sehingga Jumlah Kos, Kos Aktif, dan Status
+   Verifikasi sejajar. Di layar sempit tabel bisa digeser horizontal. */
+.admin-shell .table.table-compact {
+  font-size: 13px;
+}
+
+.admin-shell .table.table-compact th,
+.admin-shell .table.table-compact td {
+  padding: 8px 10px;
+  white-space: nowrap;
+}
+
+.admin-shell .table.table-compact th {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.admin-shell .table.table-compact .btn-sm {
+  min-height: 30px;
+  padding: 4px 12px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* ---------- Tabel Verifikasi Owner: kolom lebar tetap, baris seragam ---------- */
+.admin-shell .table.table-owner {
+  table-layout: fixed;
+  min-width: 1040px;
+}
+
+.admin-shell .table.table-owner th,
+.admin-shell .table.table-owner td {
+  padding: 12px 14px;
+  height: 56px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+.admin-shell .table.table-owner th:nth-child(1),
+.admin-shell .table.table-owner td:nth-child(1) { width: 64px; }
+.admin-shell .table.table-owner th:nth-child(2),
+.admin-shell .table.table-owner td:nth-child(2) { width: 17%; }
+.admin-shell .table.table-owner th:nth-child(3),
+.admin-shell .table.table-owner td:nth-child(3) { width: 22%; }
+.admin-shell .table.table-owner th:nth-child(4),
+.admin-shell .table.table-owner td:nth-child(4) { width: 150px; }
+.admin-shell .table.table-owner th:nth-child(5),
+.admin-shell .table.table-owner td:nth-child(5) { width: 110px; }
+.admin-shell .table.table-owner th:nth-child(6),
+.admin-shell .table.table-owner td:nth-child(6) { width: 100px; }
+.admin-shell .table.table-owner th:nth-child(7),
+.admin-shell .table.table-owner td:nth-child(7) { width: 150px; }
+.admin-shell .table.table-owner th:nth-child(8),
+.admin-shell .table.table-owner td:nth-child(8) { width: 180px; }
+
+/* kolom angka & status rata tengah, judul kolomnya ikut rata tengah */
+.admin-shell .table.table-owner th:nth-child(5),
+.admin-shell .table.table-owner td:nth-child(5),
+.admin-shell .table.table-owner th:nth-child(6),
+.admin-shell .table.table-owner td:nth-child(6),
+.admin-shell .table.table-owner th:nth-child(7),
+.admin-shell .table.table-owner td:nth-child(7) {
+  text-align: center;
+}
+
+/* semua tombol aksi sama lebar, baik "Verifikasi" maupun "Batalkan Verifikasi" */
+.admin-shell .table.table-owner .btn-sm {
+  width: 100%;
+  max-width: 160px;
+  justify-content: center;
+}
+
+/* =====================================================================
+   Tabel modern (Verifikasi Owner & Master Fasilitas)
+   Tanpa scroll horizontal: kolom pakai lebar persen, teks panjang turun
+   baris, dan di layar sempit setiap baris berubah menjadi kartu.
+   ===================================================================== */
+.admin-shell .table-responsive.table-modern-wrap {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.admin-shell .table.table-modern {
+  width: 100%;
+  min-width: 0;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 14px;
+}
+
+.admin-shell .table.table-modern th,
+.admin-shell .table.table-modern td {
+  height: auto;
+  padding: 16px 18px;
+  white-space: normal;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  text-overflow: clip;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-shell .table.table-modern thead th {
+  padding: 14px 18px;
+  background: #f1f5f9;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-shell .table.table-modern tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.admin-shell .table.table-modern tbody tr:hover {
+  background: #f8faff;
+}
+
+.admin-shell .table.table-modern td strong {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.admin-shell .table.table-modern .badge {
+  padding: 4px 12px;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+/* ---- Verifikasi Owner: total 100% ---- */
+.admin-shell .table.table-modern.table-owner th:nth-child(1),
+.admin-shell .table.table-modern.table-owner td:nth-child(1) { width: 6%; }
+.admin-shell .table.table-modern.table-owner th:nth-child(2),
+.admin-shell .table.table-modern.table-owner td:nth-child(2) { width: 15%; }
+.admin-shell .table.table-modern.table-owner th:nth-child(3),
+.admin-shell .table.table-modern.table-owner td:nth-child(3) { width: 20%; }
+.admin-shell .table.table-modern.table-owner th:nth-child(4),
+.admin-shell .table.table-modern.table-owner td:nth-child(4) { width: 14%; }
+.admin-shell .table.table-modern.table-owner th:nth-child(5),
+.admin-shell .table.table-modern.table-owner td:nth-child(5) { width: 9%; }
+.admin-shell .table.table-modern.table-owner th:nth-child(6),
+.admin-shell .table.table-modern.table-owner td:nth-child(6) { width: 9%; }
+.admin-shell .table.table-modern.table-owner th:nth-child(7),
+.admin-shell .table.table-modern.table-owner td:nth-child(7) { width: 12%; }
+.admin-shell .table.table-modern.table-owner th:nth-child(8),
+.admin-shell .table.table-modern.table-owner td:nth-child(8) { width: 15%; }
+
+.admin-shell .table.table-modern.table-owner th:nth-child(5),
+.admin-shell .table.table-modern.table-owner td:nth-child(5),
+.admin-shell .table.table-modern.table-owner th:nth-child(6),
+.admin-shell .table.table-modern.table-owner td:nth-child(6),
+.admin-shell .table.table-modern.table-owner th:nth-child(7),
+.admin-shell .table.table-modern.table-owner td:nth-child(7) {
+  text-align: center;
+}
+
+.admin-shell .table.table-modern.table-owner .btn-sm {
+  width: 100%;
+  max-width: none;
+  height: auto;
+  min-height: 34px;
+  padding: 6px 10px;
+  line-height: 1.3;
+  white-space: normal;
+  text-align: center;
+  justify-content: center;
+}
+
+/* ---- Master Fasilitas ---- */
+.admin-shell .table.table-modern.table-fasilitas th:nth-child(1),
+.admin-shell .table.table-modern.table-fasilitas td:nth-child(1) { width: 10%; }
+.admin-shell .table.table-modern.table-fasilitas th:nth-child(2),
+.admin-shell .table.table-modern.table-fasilitas td:nth-child(2) { width: 42%; }
+.admin-shell .table.table-modern.table-fasilitas th:nth-child(3),
+.admin-shell .table.table-modern.table-fasilitas td:nth-child(3) { width: 28%; }
+.admin-shell .table.table-modern.table-fasilitas th:nth-child(4),
+.admin-shell .table.table-modern.table-fasilitas td:nth-child(4) { width: 20%; }
+
+.admin-shell .table.table-modern.table-fasilitas td.td-aksi > div {
+  flex-wrap: wrap;
+}
+
+/* ---- Layar sempit: baris jadi kartu, tidak ada scroll samping ---- */
+@media (max-width: 860px) {
+  .admin-shell .table-responsive.table-modern-wrap {
+    border: 0;
+    background: transparent;
+  }
+
+  .admin-shell .table.table-modern,
+  .admin-shell .table.table-modern tbody,
+  .admin-shell .table.table-modern tr,
+  .admin-shell .table.table-modern td {
+    display: block;
+    width: 100% !important;
+  }
+
+  .admin-shell .table.table-modern thead {
+    display: none;
+  }
+
+  .admin-shell .table.table-modern tbody tr {
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .admin-shell .table.table-modern td,
+  .admin-shell .table.table-modern.table-owner td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 16px;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .admin-shell .table.table-modern td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: left;
+  }
+
+  .admin-shell .table.table-modern tbody tr:last-child td {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .admin-shell .table.table-modern td:last-child {
+    border-bottom: 0 !important;
+  }
+
+  .admin-shell .table.table-modern.table-owner .btn-sm {
+    width: auto;
+    min-width: 140px;
+  }
+}

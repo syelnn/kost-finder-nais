@@ -4,6 +4,8 @@ import api, { getErrorMessage } from '../../api/client';
 import AppLayout from '../../components/AppLayout';
 import ChartCanvas from '../../components/ChartCanvas';
 import { Spinner } from '../../components/Ui';
+import { Building2, UserCheck, CalendarCheck, Users } from 'lucide-react';
+import '../../styles/admin/dashboard.css';
 import { useToast } from '../../context/ToastContext';
 
 export default function AdminDashboardPage() {
@@ -51,28 +53,23 @@ export default function AdminDashboardPage() {
       ) : (
         <>
           <div className="stat-grid">
-            <div className="stat-card">
-              <div className="stat-label">Total Kos Terdaftar</div>
-              <div className="stat-value">{data.kartu.total_kos}</div>
-              <div className="stat-sub">{data.kartu.kos_aktif} kos aktif di peta</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-label">Owner Menunggu Verifikasi</div>
-              <div className="stat-value" style={{ color: 'var(--warning)' }}>
-                {data.kartu.owner_menunggu}
+            {[
+              { label: 'Total Kos Terdaftar', icon: Building2, value: data.kartu.total_kos, sub: `${data.kartu.kos_aktif} kos aktif di peta` },
+              { label: 'Owner Menunggu Verifikasi', icon: UserCheck, value: data.kartu.owner_menunggu, sub: `Dari total ${data.kartu.total_owner} akun Owner`, warn: true },
+              { label: 'Total Booking', icon: CalendarCheck, value: data.kartu.total_booking, sub: 'Seluruh pengajuan survey/sewa' },
+              { label: 'Total Pencari Kos (User)', icon: Users, value: data.kartu.total_user, sub: 'Pengguna terdaftar aktif' },
+            ].map((c) => (
+              <div className="stat-card" key={c.label}>
+                <div className="stat-head">
+                  <span className="stat-label">{c.label}</span>
+                  <c.icon className="icon" />
+                </div>
+                <div className="stat-value" style={c.warn ? { color: 'var(--warning)' } : undefined}>
+                  {c.value}
+                </div>
+                <div className="stat-sub">{c.sub}</div>
               </div>
-              <div className="stat-sub">Dari total {data.kartu.total_owner} akun Owner</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-label">Total Booking</div>
-              <div className="stat-value">{data.kartu.total_booking}</div>
-              <div className="stat-sub">Seluruh pengajuan survey/sewa</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-label">Total Pencari Kos (User)</div>
-              <div className="stat-value">{data.kartu.total_user}</div>
-              <div className="stat-sub">Pengguna terdaftar aktif</div>
-            </div>
+            ))}
           </div>
 
           <div className="chart-grid">
@@ -88,7 +85,7 @@ export default function AdminDashboardPage() {
                   {
                     label: 'Jumlah Kos',
                     data: data.grafik.kosPerWilayah.data,
-                    backgroundColor: '#0f766e',
+                    backgroundColor: '#2563eb',
                     borderRadius: 6,
                   },
                 ]}
@@ -107,8 +104,8 @@ export default function AdminDashboardPage() {
                   {
                     label: 'Booking Masuk',
                     data: data.grafik.pertumbuhanBooking.data,
-                    borderColor: '#0d9488',
-                    backgroundColor: 'rgba(13, 148, 136, 0.15)',
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.15)',
                     fill: true,
                     tension: 0.3,
                   },

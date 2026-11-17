@@ -3,6 +3,7 @@ import api, { getErrorMessage, getFieldErrors } from '../../api/client';
 import AppLayout from '../../components/AppLayout';
 import { EmptyState, Modal, Spinner } from '../../components/Ui';
 import { useToast } from '../../context/ToastContext';
+import { Plus } from 'lucide-react';
 
 export default function AdminFasilitasPage() {
   const { showToast } = useToast();
@@ -125,7 +126,14 @@ export default function AdminFasilitasPage() {
             {addError && <div className="field-error">{addError}</div>}
           </div>
           <button type="submit" className="btn btn-primary" disabled={adding}>
-            {adding ? 'Menyimpan...' : '+ Tambah Fasilitas'}
+            {adding ? (
+              'Menyimpan...'
+            ) : (
+              <>
+                <Plus size={18} aria-hidden="true" />
+                Tambah Fasilitas
+              </>
+            )}
           </button>
         </form>
       </div>
@@ -136,8 +144,8 @@ export default function AdminFasilitasPage() {
         ) : items.length === 0 ? (
           <EmptyState title="Belum ada fasilitas" description="Tambahkan fasilitas pertama di atas." />
         ) : (
-          <div className="table-responsive">
-            <table className="table">
+          <div className="table-responsive table-modern-wrap">
+            <table className="table table-modern table-fasilitas">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -149,12 +157,12 @@ export default function AdminFasilitasPage() {
               <tbody>
                 {items.map((f) => (
                   <tr key={f.fasilitas_id}>
-                    <td>#{f.fasilitas_id}</td>
-                    <td>
+                    <td data-label="ID">#{f.fasilitas_id}</td>
+                    <td data-label="Nama Fasilitas">
                       <strong>{f.nama_fasilitas}</strong>
                     </td>
-                    <td>{f.jumlah_kos} kos</td>
-                    <td>
+                    <td data-label="Digunakan Oleh">{f.jumlah_kos} kos</td>
+                    <td data-label="Aksi" className="td-aksi">
                       <div style={{ display: 'flex', gap: 8 }}>
                         <button
                           type="button"

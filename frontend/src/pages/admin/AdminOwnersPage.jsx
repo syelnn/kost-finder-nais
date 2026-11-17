@@ -90,8 +90,8 @@ export default function AdminOwnersPage() {
           />
         ) : (
           <>
-            <div className="table-responsive">
-              <table className="table">
+            <div className="table-responsive table-modern-wrap">
+              <table className="table table-compact table-owner table-modern">
                 <thead>
                   <tr>
                     <th>ID</th>
@@ -107,18 +107,18 @@ export default function AdminOwnersPage() {
                 <tbody>
                   {paged.map((o) => (
                     <tr key={o.user_id}>
-                      <td>#{o.user_id}</td>
-                      <td>
+                      <td data-label="ID">#{o.user_id}</td>
+                      <td data-label="Nama Pemilik" title={o.nama}>
                         <strong>{o.nama}</strong>
                       </td>
-                      <td>{o.email}</td>
-                      <td>{o.no_wa || '-'}</td>
-                      <td>{o.jumlah_kos} kos</td>
-                      <td>{o.kos_aktif} aktif</td>
-                      <td>
+                      <td data-label="Email" title={o.email}>{o.email}</td>
+                      <td data-label="No. WhatsApp">{o.no_wa || '-'}</td>
+                      <td data-label="Jumlah Kos">{o.jumlah_kos} kos</td>
+                      <td data-label="Kos Aktif">{o.kos_aktif} aktif</td>
+                      <td data-label="Status Verifikasi">
                         <StatusBadge status={o.status_verifikasi} />
                       </td>
-                      <td>
+                      <td data-label="Aksi" className="td-aksi">
                         {o.status_verifikasi === 'Menunggu' ? (
                           <button
                             type="button"

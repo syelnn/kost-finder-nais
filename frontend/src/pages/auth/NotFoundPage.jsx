@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth, roleHomePath } from '../../context/AuthContext';
+import '../../styles/auth/auth.css';
 
 export default function NotFoundPage() {
   const { user } = useAuth();

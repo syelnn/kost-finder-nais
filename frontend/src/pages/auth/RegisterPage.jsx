@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth, roleHomePath } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { getErrorMessage, getFieldErrors } from '../../api/client';
+import '../../styles/auth/auth.css';
 
 export default function RegisterPage() {
   const { register } = useAuth();

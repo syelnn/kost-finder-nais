@@ -4,6 +4,7 @@ import api, { getErrorMessage } from '../../api/client';
 import AppLayout from '../../components/AppLayout';
 import { EmptyState, KosImage, Spinner, StatusBadge } from '../../components/Ui';
 import { useToast } from '../../context/ToastContext';
+import '../../styles/user/map.css';
 import {
   KAMPUS_PRESETS,
   formatJarak,

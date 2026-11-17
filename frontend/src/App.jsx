@@ -18,6 +18,7 @@ import UserKosDetailPage from './pages/user/UserKosDetailPage';
 import UserBookingsPage from './pages/user/UserBookingsPage';
 import LaporanPage from './pages/LaporanPage';
 
+
 export default function App() {
   return (
     <Routes>

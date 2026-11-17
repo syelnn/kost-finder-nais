@@ -5,6 +5,7 @@ import ChartCanvas from '../components/ChartCanvas';
 import { EmptyState, Pagination, Spinner, StatusBadge } from '../components/Ui';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { Download } from 'lucide-react';
 import { formatRating, formatRupiah, formatTanggal } from '../utils/format';
 
 const BACKUP_TABLES = [
@@ -110,6 +111,9 @@ export default function LaporanPage() {
     setStatusBooking('');
   };
 
+  // Tombol Reset Filter hanya tampil bila ada filter yang sudah dipilih.
+  const hasActiveFilter = Boolean(wilayah || tipeKos || statusBooking);
+
   const pageSize = 10;
   const kosRows = data?.kos || [];
   const kamarRows = data?.kamar || [];
@@ -128,13 +132,15 @@ export default function LaporanPage() {
 
       {/* Filter Laporan */}
       <div className="card" style={{ marginBottom: 20 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, minHeight: 34 }}>
           <h3 style={{ margin: 0 }}>Filter Laporan</h3>
-          <button type="button" className="btn btn-ghost btn-sm" onClick={resetFilters}>
-            Reset Filter
-          </button>
+          {hasActiveFilter && (
+            <button type="button" className="btn btn-ghost btn-sm" onClick={resetFilters}>
+              Reset Filter
+            </button>
+          )}
         </div>
-        <div className="form-row" style={{ gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
+        <div className="form-row filter-grid">
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label htmlFor="lap-wilayah">Wilayah (Kota/Kabupaten)</label>
             <select
@@ -204,6 +210,8 @@ export default function LaporanPage() {
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: 8,
                   padding: '8px 12px',
                   background: '#f8fafc',
                   borderRadius: 8,
@@ -246,9 +254,14 @@ export default function LaporanPage() {
             onClick={handleBackupXlsx}
             style={{ marginBottom: 12 }}
           >
-            {busyKey === 'backup-xlsx'
-              ? 'Menyiapkan Backup Excel...'
-              : '⬇ Unduh Backup Lengkap Multi-Sheet (.xlsx)'}
+            {busyKey === 'backup-xlsx' ? (
+              'Menyiapkan Backup Excel...'
+            ) : (
+              <>
+                <Download size={18} aria-hidden="true" />
+                Unduh Backup Lengkap Multi-Sheet (.xlsx)
+              </>
+            )}
           </button>
           <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6 }}>
             Unduh CSV per Tabel:
