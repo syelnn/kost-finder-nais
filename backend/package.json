@@ -1,0 +1,31 @@
+{
+  "name": "kos-finder-backend",
+  "version": "1.0.0",
+  "description": "Backend REST API Kos Finder - Aplikasi Pencarian dan Pemesanan Kos Berbasis Peta (UKK PPLG 2026/2027)",
+  "main": "src/server.js",
+  "private": true,
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "smoke": "node scripts/smoke-test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "exceljs": "^4.4.0",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "multer": "^2.0.2",
+    "node-cron": "^3.0.3",
+    "pdfkit": "^0.15.2",
+    "pg": "^8.13.1",
+    "zod": "^3.24.1"
+  }
+}
