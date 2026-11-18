@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import api, { getErrorMessage } from '../../api/client';
 import AppLayout from '../../components/AppLayout';
 import { EmptyState, KosImage, Spinner, StatusBadge } from '../../components/Ui';
@@ -27,6 +27,9 @@ function escapeHtml(str) {
 export default function UserMapPage() {
   const { showToast } = useToast();
   const navigate = useNavigate();
+  // Kata kunci awal dibaca dari URL (?q=...), mis. dari search bar landing page.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [keyword, setKeyword] = useState(() => searchParams.get('q') || '');
 
   const [masterFasilitas, setMasterFasilitas] = useState([]);
   const [kosList, setKosList] = useState([]);
@@ -164,6 +167,7 @@ export default function UserMapPage() {
         if (hargaMax !== '') params.hargaMax = hargaMax;
         if (selectedFasilitas.length) params.fasilitas = selectedFasilitas.join(',');
         if (tipeKos) params.tipe = tipeKos;
+        if (keyword.trim()) params.q = keyword.trim();
 
         const { data } = await api.get('/kos', {
           params,
@@ -182,7 +186,7 @@ export default function UserMapPage() {
       clearTimeout(timer);
       controller.abort();
     };
-  }, [refPoint, radius, hargaMin, hargaMax, selectedFasilitas, tipeKos, showToast]);
+  }, [refPoint, radius, hargaMin, hargaMax, selectedFasilitas, tipeKos, keyword, showToast]);
 
   // Render kos markers on map
   useEffect(() => {
@@ -293,7 +297,16 @@ export default function UserMapPage() {
     );
   };
 
+  const handleKeywordChange = (e) => {
+    const value = e.target.value;
+    setKeyword(value);
+    // Jaga URL tetap sinkron (bisa di-refresh / dibagikan) tanpa menambah riwayat browser.
+    setSearchParams(value.trim() ? { q: value } : {}, { replace: true });
+  };
+
   const handleResetFilter = () => {
+    setKeyword('');
+    setSearchParams({}, { replace: true });
     setRefPoint(null);
     setPickingRef(false);
     setRadius(5);
@@ -328,6 +341,16 @@ export default function UserMapPage() {
               </button>
             </div>
           </div>
+
+          <input
+            id="map-q"
+            type="search"
+            className="form-control"
+            placeholder="Cari nama kos, alamat, atau wilayah…"
+            aria-label="Cari nama kos, alamat, atau wilayah"
+            value={keyword}
+            onChange={handleKeywordChange}
+          />
 
           {filterDrawerOpen && (
             <div

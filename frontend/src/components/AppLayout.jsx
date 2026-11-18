@@ -13,6 +13,7 @@ import '../styles/user/layout.css';
 const USER_MENUS = [
   { to: '/peta', label: 'Cari Kos di Peta' },
   { to: '/booking-saya', label: 'Booking Saya' },
+  { to: '/review-saya', label: 'Review Saya' },
 ];
 
 // Kunci localStorage untuk mengingat sidebar Admin terakhir dibuka/ditutup.
@@ -91,7 +92,7 @@ export default function AppLayout({ children, fullHeight = false }) {
           <div className="top-navbar-inner">
             <NavLink to="/peta" className="brand-logo">
               <span className="brand-mark">⌂</span>
-              <span>Kos Finder</span>
+              <span>Kos Nais</span>
             </NavLink>
             <nav className="top-nav-links" aria-label="Menu Pencari Kos">
               {USER_MENUS.map((m) => (

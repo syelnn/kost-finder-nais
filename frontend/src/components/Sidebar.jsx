@@ -76,13 +76,13 @@ export default function Sidebar({ user, open, collapsed = false, onClose, onLogo
       )}
       <aside className={`sidebar ${open ? 'open' : ''} ${collapsed ? 'collapsed' : ''}`} aria-label="Navigasi samping">
         <div className="sidebar-brand">
-          <img 
-            src={logoKosFinder} 
-            alt="Logo Kos Finder" 
-            style={{ width: '32px', height: '32px', objectFit: 'contain', borderRadius: '6px' }} 
-          />  
+          <img
+            src={logoKosFinder}
+            alt="Logo Kos Finder"
+            style={{ width: '32px', height: '32px', objectFit: 'contain', borderRadius: '6px' }}
+          />
           <div>
-            <div className="brand-title">Kos Finder</div>
+            <div className="brand-title">Kos Nais</div>
             <div className="brand-subtitle">Panel {user.role === 'Admin' ? 'Administrator' : 'Pemilik Kos'}</div>
           </div>
         </div>
