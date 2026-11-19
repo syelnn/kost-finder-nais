@@ -5,7 +5,6 @@ import AppLayout from '../../components/AppLayout';
 import ChartCanvas from '../../components/ChartCanvas';
 import { Spinner } from '../../components/Ui';
 import { Building2, UserCheck, CalendarCheck, Users } from 'lucide-react';
-import '../../styles/admin/dashboard.css';
 import { useToast } from '../../context/ToastContext';
 
 export default function AdminDashboardPage() {
@@ -38,7 +37,7 @@ export default function AdminDashboardPage() {
             Ringkasan operasional Kos Finder, sebaran kos terdaftar per wilayah, dan pertumbuhan booking 12 bulan terakhir.
           </p>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div className="page-actions">
           <Link to="/admin/owner" className="btn btn-secondary">
             Verifikasi Owner
           </Link>
@@ -85,7 +84,7 @@ export default function AdminDashboardPage() {
                   {
                     label: 'Jumlah Kos',
                     data: data.grafik.kosPerWilayah.data,
-                    backgroundColor: '#2563eb',
+                    backgroundColor: '#16a34a',
                     borderRadius: 6,
                   },
                 ]}
@@ -104,8 +103,8 @@ export default function AdminDashboardPage() {
                   {
                     label: 'Booking Masuk',
                     data: data.grafik.pertumbuhanBooking.data,
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                    borderColor: '#16a34a',
+                    backgroundColor: 'rgba(22, 163, 74, 0.15)',
                     fill: true,
                     tension: 0.3,
                   },

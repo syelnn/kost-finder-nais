@@ -6,6 +6,7 @@ import ChartCanvas from '../../components/ChartCanvas';
 import { Spinner } from '../../components/Ui';
 import { useToast } from '../../context/ToastContext';
 import { formatRupiah } from '../../utils/format';
+import { Building2, DoorOpen, Percent, Clock, Plus, CalendarCheck } from 'lucide-react';
 
 export default function OwnerDashboardPage() {
   const { showToast } = useToast();
@@ -30,18 +31,16 @@ export default function OwnerDashboardPage() {
 
   return (
     <AppLayout>
-      <div className="page-header">
+      <div className="page-header owner-dashboard-header">
         <div>
           <h1>Dashboard Pemilik Kos</h1>
           <p style={{ color: 'var(--text-muted)', margin: 0 }}>
             Pantau okupansi kamar, pengajuan booking menunggu persetujuan, dan grafik estimasi pendapatan bulanan.
           </p>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <Link to="/owner/kos/baru" className="btn btn-secondary">
-            + Tambah Kos
-          </Link>
+        <div className="page-actions">
           <Link to="/owner/booking" className="btn btn-primary">
+            <CalendarCheck className="icon" />
             Proses Booking
           </Link>
         </div>
@@ -52,30 +51,28 @@ export default function OwnerDashboardPage() {
       ) : (
         <>
           <div className="stat-grid">
-            <div className="stat-card">
-              <div className="stat-label">Total Kos Saya</div>
-              <div className="stat-value">{data.kartu.total_kos}</div>
-              <div className="stat-sub">{data.kartu.kos_aktif} kos aktif dipublikasikan</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-label">Total Kamar</div>
-              <div className="stat-value">{data.kartu.total_kamar}</div>
-              <div className="stat-sub">{data.kartu.kamar_terisi} kamar sedang terisi</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-label">Tingkat Okupansi</div>
-              <div className="stat-value">{String(data.kartu.okupansi_persen).replace('.', ',')}%</div>
-              <div className="stat-sub">
-                Potensi: {formatRupiah(data.kartu.potensi_pendapatan)}/bln
+            {[
+              { label: 'Total Kos Saya', icon: Building2, value: data.kartu.total_kos, sub: `${data.kartu.kos_aktif} kos aktif dipublikasikan` },
+              { label: 'Total Kamar', icon: DoorOpen, value: data.kartu.total_kamar, sub: `${data.kartu.kamar_terisi} kamar sedang terisi` },
+              {
+                label: 'Tingkat Okupansi',
+                icon: Percent,
+                value: `${String(data.kartu.okupansi_persen).replace('.', ',')}%`,
+                sub: `Potensi: ${formatRupiah(data.kartu.potensi_pendapatan)}/bln`,
+              },
+              { label: 'Booking Menunggu', icon: Clock, value: data.kartu.booking_menunggu, sub: 'Perlu segera disetujui / ditolak', warn: true },
+            ].map((c) => (
+              <div className="stat-card" key={c.label}>
+                <div className="stat-head">
+                  <span className="stat-label">{c.label}</span>
+                  <c.icon className="icon" />
+                </div>
+                <div className="stat-value" style={c.warn ? { color: 'var(--warning)' } : undefined}>
+                  {c.value}
+                </div>
+                <div className="stat-sub">{c.sub}</div>
               </div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-label">Booking Menunggu</div>
-              <div className="stat-value" style={{ color: 'var(--warning)' }}>
-                {data.kartu.booking_menunggu}
-              </div>
-              <div className="stat-sub">Perlu segera disetujui / ditolak</div>
-            </div>
+            ))}
           </div>
 
           <div className="chart-grid">
@@ -109,7 +106,7 @@ export default function OwnerDashboardPage() {
                   {
                     label: 'Okupansi (%)',
                     data: data.grafik.okupansiPerKos.data,
-                    backgroundColor: '#0d9488',
+                    backgroundColor: '#16a34a',
                     borderRadius: 6,
                   },
                 ]}
@@ -134,7 +131,7 @@ export default function OwnerDashboardPage() {
                 {
                   label: 'Estimasi Pendapatan (Rp)',
                   data: data.grafik.pendapatanPerBulan.data,
-                  backgroundColor: '#0f766e',
+                  backgroundColor: '#15803d',
                   borderRadius: 6,
                 },
               ]}

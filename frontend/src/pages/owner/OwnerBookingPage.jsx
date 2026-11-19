@@ -4,6 +4,7 @@ import AppLayout from '../../components/AppLayout';
 import { EmptyState, Modal, Pagination, Spinner, StatusBadge } from '../../components/Ui';
 import { useToast } from '../../context/ToastContext';
 import { formatRupiah, formatTanggal } from '../../utils/format';
+import { Check, X, Download } from 'lucide-react';
 
 export default function OwnerBookingPage() {
   const { showToast } = useToast();
@@ -85,10 +86,9 @@ export default function OwnerBookingPage() {
             Setujui atau tolak pengajuan booking dari pencari kos. Status kamar berubah otomatis tanpa refresh halaman.
           </p>
         </div>
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+        <div className="page-actions">
           <select
             className="form-control"
-            style={{ width: 200 }}
             value={kosFilter}
             onChange={(e) => setKosFilter(e.target.value)}
             aria-label="Filter berdasarkan kos"
@@ -102,7 +102,6 @@ export default function OwnerBookingPage() {
           </select>
           <select
             className="form-control"
-            style={{ width: 170 }}
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             aria-label="Filter berdasarkan status booking"
@@ -142,27 +141,27 @@ export default function OwnerBookingPage() {
                 <tbody>
                   {paged.map((b) => (
                     <tr key={b.booking_id}>
-                      <td>#{b.booking_id}</td>
-                      <td>
+                      <td data-label="ID">#{b.booking_id}</td>
+                      <td data-label="Kos & Kamar" className="td-stack">
                         <strong>{b.nama_kos}</strong>
                         <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
                           No. {b.no_kamar} - Tipe {b.tipe_kamar} ({formatRupiah(b.harga)}/bln)
                         </div>
                       </td>
-                      <td>
+                      <td data-label="Pencari Kos" className="td-stack">
                         <strong>{b.nama_user}</strong>
                         <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
                           {b.email_user} {b.no_wa_user ? `· WA: ${b.no_wa_user}` : ''}
                         </div>
                       </td>
-                      <td>{formatTanggal(b.tanggal_survey)}</td>
-                      <td>
+                      <td data-label="Tanggal Survey/Sewa">{formatTanggal(b.tanggal_survey)}</td>
+                      <td data-label="Status Booking">
                         <StatusBadge status={b.status_booking} />
                       </td>
-                      <td>
+                      <td data-label="Status Kamar">
                         <StatusBadge status={b.status_kamar} />
                       </td>
-                      <td>
+                      <td data-label="Aksi" className="td-aksi">
                         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                           {b.status_booking === 'Menunggu' && (
                             <>
@@ -171,6 +170,7 @@ export default function OwnerBookingPage() {
                                 className="btn btn-primary btn-sm"
                                 onClick={() => setActionModal({ booking: b, aksi: 'setujui' })}
                               >
+                                <Check className="icon" />
                                 Setujui
                               </button>
                               <button
@@ -178,6 +178,7 @@ export default function OwnerBookingPage() {
                                 className="btn btn-danger btn-sm"
                                 onClick={() => setActionModal({ booking: b, aksi: 'tolak' })}
                               >
+                                <X className="icon" />
                                 Tolak
                               </button>
                             </>
@@ -189,6 +190,7 @@ export default function OwnerBookingPage() {
                               disabled={downloadingId === b.booking_id}
                               onClick={() => handleDownloadBukti(b.booking_id)}
                             >
+                              {downloadingId !== b.booking_id && <Download className="icon" />}
                               {downloadingId === b.booking_id ? 'Mengunduh...' : 'Bukti PDF'}
                             </button>
                           )}

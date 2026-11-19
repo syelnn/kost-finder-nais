@@ -78,12 +78,6 @@ body {
   margin: 0 0 12px;
 }
 
-:where(.user-shell) .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 16px;
-}
-
 /* ---------- Komponen umum ---------- */
 :where(.user-shell) .btn {
   display: inline-flex;
@@ -518,39 +512,6 @@ body {
   margin-bottom: 20px;
 }
 
-:where(.user-shell) .stat-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-:where(.user-shell) .stat-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px;
-}
-
-:where(.user-shell) .stat-label {
-  font-size: 13px;
-  color: var(--text-muted);
-  font-weight: 600;
-}
-
-:where(.user-shell) .stat-value {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--primary);
-  margin-top: 4px;
-}
-
-:where(.user-shell) .stat-sub {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-top: 4px;
-}
-
 :where(.user-shell) .chart-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -558,25 +519,8 @@ body {
   margin-bottom: 24px;
 }
 
-:where(.user-shell) .stat-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
 @media (max-width: 1024px) {
-  :where(.user-shell) .stat-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
   :where(.user-shell) .chart-grid {
-      grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 480px) {
-  :where(.user-shell) .stat-grid {
       grid-template-columns: 1fr;
     }
 }

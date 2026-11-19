@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Building2, X } from 'lucide-react';
 import { fotoUrl, placeholderSvgDataUri } from '../utils/format';
 
 const BADGE_MAP = {
@@ -38,7 +39,7 @@ export function EmptyState({ title = 'Belum ada data', description, actionLabel,
   return (
     <div className="empty-state">
       <div className="empty-icon" aria-hidden="true">
-        ⌂
+        <Building2 size={32} />
       </div>
       <h3>{title}</h3>
       {description && <p>{description}</p>}
@@ -69,7 +70,7 @@ export function Modal({
         <div className="modal-header">
           <h3 id="modal-title">{title}</h3>
           <button type="button" className="btn-icon" onClick={onClose} aria-label="Tutup dialog">
-            ×
+            <X size={20} />
           </button>
         </div>
         <div className="modal-body">{children}</div>

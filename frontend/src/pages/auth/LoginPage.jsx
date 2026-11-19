@@ -28,7 +28,6 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       const res = await login(email, password);
-      showToast(res.message || 'Login berhasil.', 'success');
       navigate(roleHomePath(res.data.user.role), { replace: true });
     } catch (err) {
       setErrors(getFieldErrors(err));

@@ -144,8 +144,8 @@ export default function AdminFasilitasPage() {
         ) : items.length === 0 ? (
           <EmptyState title="Belum ada fasilitas" description="Tambahkan fasilitas pertama di atas." />
         ) : (
-          <div className="table-responsive table-modern-wrap">
-            <table className="table table-modern table-fasilitas">
+          <div className="table-responsive">
+            <table className="table table-fasilitas">
               <thead>
                 <tr>
                   <th>ID</th>

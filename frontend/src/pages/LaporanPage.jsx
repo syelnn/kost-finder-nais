@@ -5,7 +5,7 @@ import ChartCanvas from '../components/ChartCanvas';
 import { EmptyState, Pagination, Spinner, StatusBadge } from '../components/Ui';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import { Download } from 'lucide-react';
+import { Download, Star } from 'lucide-react';
 import { formatRating, formatRupiah, formatTanggal } from '../utils/format';
 
 const BACKUP_TABLES = [
@@ -219,7 +219,7 @@ export default function LaporanPage() {
                 }}
               >
                 <strong>{item.label}</strong>
-                <div style={{ display: 'flex', gap: 8 }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   <button
                     type="button"
                     className="btn btn-primary btn-sm"
@@ -319,7 +319,7 @@ export default function LaporanPage() {
                   {
                     label: 'Jumlah Booking',
                     data: data.grafik.statusBooking.data,
-                    backgroundColor: ['#d97706', '#16a34a', '#dc2626', '#0f766e'],
+                    backgroundColor: ['#d97706', '#16a34a', '#dc2626', '#15803d'],
                     borderRadius: 6,
                   },
                 ]}
@@ -335,8 +335,8 @@ export default function LaporanPage() {
                   {
                     label: 'Jumlah Booking',
                     data: data.grafik.bookingPerBulan.data,
-                    borderColor: '#0f766e',
-                    backgroundColor: 'rgba(15, 118, 110, 0.15)',
+                    borderColor: '#16a34a',
+                    backgroundColor: 'rgba(22, 163, 74, 0.15)',
                     fill: true,
                     tension: 0.3,
                   },
@@ -397,23 +397,27 @@ export default function LaporanPage() {
                             .slice((pageKos - 1) * pageSize, pageKos * pageSize)
                             .map((k) => (
                               <tr key={k.kos_id}>
-                                <td>#{k.kos_id}</td>
-                                <td>
+                                <td data-label="ID">#{k.kos_id}</td>
+                                <td data-label="Nama Kos">
                                   <strong>{k.nama_kos}</strong>
                                 </td>
-                                <td>{k.pemilik}</td>
-                                <td>{k.wilayah}</td>
-                                <td>
+                                <td data-label="Pemilik">{k.pemilik}</td>
+                                <td data-label="Wilayah">{k.wilayah}</td>
+                                <td data-label="Tipe">
                                   <StatusBadge status={k.tipe_kos} />
                                 </td>
-                                <td>
+                                <td data-label="Status">
                                   <StatusBadge status={k.status_verifikasi} />
                                 </td>
-                                <td>
+                                <td data-label="Kamar (Kosong/Total)">
                                   {k.kamar_kosong} / {k.jumlah_kamar}
                                 </td>
-                                <td>{formatRupiah(k.harga_mulai)}</td>
-                                <td>★ {formatRating(k.rata_rating)}</td>
+                                <td data-label="Harga Mulai">{formatRupiah(k.harga_mulai)}</td>
+                                <td data-label="Rating">
+                                  <span>
+                                    <Star className="icon-star" /> {formatRating(k.rata_rating)}
+                                  </span>
+                                </td>
                               </tr>
                             ))}
                         </tbody>
@@ -454,15 +458,15 @@ export default function LaporanPage() {
                             .slice((pageKamar - 1) * pageSize, pageKamar * pageSize)
                             .map((km) => (
                               <tr key={km.kamar_id}>
-                                <td>#{km.kamar_id}</td>
-                                <td>
+                                <td data-label="ID">#{km.kamar_id}</td>
+                                <td data-label="Nama Kos">
                                   <strong>{km.nama_kos}</strong>
                                 </td>
-                                <td>{km.wilayah}</td>
-                                <td>No. {km.no_kamar}</td>
-                                <td>{km.tipe_kamar}</td>
-                                <td>{formatRupiah(km.harga)}</td>
-                                <td>
+                                <td data-label="Wilayah">{km.wilayah}</td>
+                                <td data-label="No. Kamar">No. {km.no_kamar}</td>
+                                <td data-label="Tipe Kamar">{km.tipe_kamar}</td>
+                                <td data-label="Harga / Bulan">{formatRupiah(km.harga)}</td>
+                                <td data-label="Status Kamar">
                                   <StatusBadge status={km.status_kamar} />
                                 </td>
                               </tr>
@@ -505,20 +509,20 @@ export default function LaporanPage() {
                             .slice((pageBooking - 1) * pageSize, pageBooking * pageSize)
                             .map((b) => (
                               <tr key={b.booking_id}>
-                                <td>#{b.booking_id}</td>
-                                <td>
+                                <td data-label="ID">#{b.booking_id}</td>
+                                <td data-label="Nama Kos & Wilayah" className="td-stack">
                                   <strong>{b.nama_kos}</strong>
                                   <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
                                     {b.wilayah}
                                   </div>
                                 </td>
-                                <td>
+                                <td data-label="Kamar">
                                   No. {b.no_kamar} - {b.tipe_kamar}
                                 </td>
-                                <td>{b.nama_user}</td>
-                                <td>{formatTanggal(b.tanggal_survey)}</td>
-                                <td>{formatRupiah(b.harga)}</td>
-                                <td>
+                                <td data-label="Pencari Kos">{b.nama_user}</td>
+                                <td data-label="Tgl Survey">{formatTanggal(b.tanggal_survey)}</td>
+                                <td data-label="Harga">{formatRupiah(b.harga)}</td>
+                                <td data-label="Status Booking">
                                   <StatusBadge status={b.status_booking} />
                                 </td>
                               </tr>

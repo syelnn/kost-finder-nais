@@ -1,524 +1,170 @@
-/* ==== OWNER - isi halaman: tombol, form, card, tabel, modal, statistik, form kos ==== */
-/* ---------- Komponen umum ---------- */
-:where(.owner-shell) .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 8px 16px;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  border-radius: var(--radius-sm);
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
-  text-decoration: none !important;
-}
+/* ==== OWNER - gaya khusus halaman Owner ====
+   Gaya umum (tombol, form, kartu, tabel, modal, statistik) ngikut ke Admin
+   dari styles/admin/dashboard.css, jadi tidak diulang di sini yachhh. */
 
-:where(.owner-shell) .btn:focus-visible {
-  outline: 3px solid var(--primary-100);
-  outline-offset: 2px;
-}
-
-:where(.owner-shell) .btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-:where(.owner-shell) .btn-primary {
-  background: var(--primary);
-  color: #ffffff;
-}
-
-:where(.owner-shell) .btn-primary:hover:not(:disabled) {
-  background: var(--primary-600);
-}
-
-:where(.owner-shell) .btn-secondary {
-  background: var(--surface);
-  color: var(--text);
-  border-color: var(--border);
-}
-
-:where(.owner-shell) .btn-secondary:hover:not(:disabled) {
-  background: #f1f5f9;
-}
-
-:where(.owner-shell) .btn-danger {
-  background: var(--danger);
-  color: #ffffff;
-}
-
-:where(.owner-shell) .btn-danger:hover:not(:disabled) {
-  background: #b91c1c;
-}
-
-:where(.owner-shell) .btn-ghost {
-  background: var(--primary-50);
-  color: var(--primary);
-  border-color: var(--primary-100);
-}
-
-:where(.owner-shell) .btn-ghost:hover:not(:disabled) {
-  background: var(--primary-100);
-}
-
-:where(.owner-shell) .btn-sm {
-  min-height: 36px;
-  padding: 6px 12px;
-  font-size: 13px;
-}
-
-:where(.owner-shell) .btn-block {
-  width: 100%;
-}
-
-:where(.owner-shell) .btn-icon {
-  min-width: 36px;
-  min-height: 36px;
-  border: none;
-  background: transparent;
-  font-size: 22px;
-  line-height: 1;
-  cursor: pointer;
-  color: var(--text-muted);
-  border-radius: var(--radius-sm);
-}
-
-:where(.owner-shell) .form-group {
-  margin-bottom: 16px;
-}
-
-:where(.owner-shell) .form-group label {
-  display: block;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 6px;
-  color: var(--text);
-}
-
-:where(.owner-shell) .form-control {
-  width: 100%;
-  min-height: 44px;
-  padding: 9px 12px;
-  font-family: inherit;
-  font-size: 14px;
-  color: var(--text);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-}
-
-:where(.owner-shell) .form-control:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-100);
-}
-
-:where(.owner-shell) .form-control.is-invalid {
-  border-color: var(--danger);
-}
-
-:where(.owner-shell) .form-control[readonly] {
-  background: #f1f5f9;
-  color: var(--text-muted);
-}
-
-:where(.owner-shell) textarea.form-control {
-  min-height: 90px;
-  resize: vertical;
-}
-
-:where(.owner-shell) .field-error {
-  margin-top: 4px;
-  font-size: 12px;
-  color: var(--danger);
-  font-weight: 600;
-}
-
-:where(.owner-shell) .field-hint {
+.owner-shell .field-hint {
   margin-top: 4px;
   font-size: 12px;
   color: var(--text-muted);
 }
 
-:where(.owner-shell) .form-row {
+/* ---------- Daftar Kos ---------- */
+.owner-shell .kos-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr));
   gap: 16px;
 }
 
-:where(.owner-shell) .card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  box-shadow: var(--shadow-sm);
-}
-
-:where(.owner-shell) .badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-:where(.owner-shell) .badge-success {
-  background: var(--success-bg);
-  color: #15803d;
-}
-
-:where(.owner-shell) .badge-warning {
-  background: var(--warning-bg);
-  color: #b45309;
-}
-
-:where(.owner-shell) .badge-danger {
-  background: var(--danger-bg);
-  color: #b91c1c;
-}
-
-:where(.owner-shell) .badge-info {
-  background: var(--info-bg);
-  color: #0369a1;
-}
-
-:where(.owner-shell) .badge-neutral {
-  background: var(--neutral-bg);
-  color: #334155;
-}
-
-:where(.owner-shell) .badge-teal {
-  background: var(--primary-100);
-  color: var(--primary);
-}
-
-:where(.owner-shell) .badge-pink {
-  background: #fce7f3;
-  color: #be185d;
-}
-
-:where(.owner-shell) .brand-logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--primary);
-  text-decoration: none !important;
-}
-
-:where(.owner-shell) .brand-mark {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: var(--primary);
-  color: #ffffff;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  font-weight: 700;
-}
-
-:where(.owner-shell) .table-responsive {
-  width: 100%;
-  overflow-x: auto;
-}
-
-:where(.owner-shell) .table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-}
-
-:where(.owner-shell) .table th,
-:where(.owner-shell) .table td {
-  padding: 12px 14px;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
-  vertical-align: middle;
-}
-
-:where(.owner-shell) .table th {
-  background: #f8fafc;
-  font-weight: 700;
-  color: var(--text-muted);
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-:where(.owner-shell) .table tbody tr:hover {
-  background: #f8fafc;
-}
-
-:where(.owner-shell) .pagination {
+.owner-shell .kos-card {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 12px;
-  padding-top: 14px;
+  min-width: 0;
 }
 
-:where(.owner-shell) .pagination-info,
-:where(.owner-shell) .pagination-page {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-:where(.owner-shell) .pagination-controls {
+.owner-shell .kos-card-head {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 8px;
 }
 
-:where(.owner-shell) .picker-map {
-  height: 320px;
-  width: 100%;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
+.owner-shell .kos-card-head > div:first-child {
+  flex: 1 1 160px;
+  min-width: 0;
 }
 
-:where(.owner-shell) .kos-card-thumb {
-  width: 96px;
-  height: 76px;
+.owner-shell .kos-card-badges {
+  display: flex;
+  gap: 6px;
+}
+
+.owner-shell .kos-card-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 8px;
+  padding: 10px 12px;
+  font-size: 12px;
+  background: #f8fafc;
+  border-radius: var(--radius-sm);
+}
+
+.owner-shell .kos-card-stats > div > div {
+  color: var(--text-muted);
+}
+
+.owner-shell .kos-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.owner-shell .kos-card-thumb {
+  display: block;
+  width: 100%;
+  height: 170px;
   object-fit: cover;
   border-radius: 6px;
-  flex-shrink: 0;
 }
 
-:where(.owner-shell) .modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.55);
-  z-index: 2000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
+/* foto di formulir kos: lebih pendek dari foto kartu */
+.owner-shell .kos-foto-thumb {
+  height: 100px;
 }
 
-:where(.owner-shell) .modal-card {
+/* ---------- Peta pemilih lokasi ---------- */
+.owner-shell .picker-map {
   width: 100%;
-  max-width: 480px;
-  background: var(--surface);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  overflow: hidden;
+  height: 320px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
 }
 
-:where(.owner-shell) .modal-header,
-:where(.owner-shell) .modal-footer {
-  padding: 14px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--border);
+/* Peta Leaflet punya z-index internal tinggi (hingga 1000). Tanpa isolasi, peta menimpa
+   topbar yang sticky saat halaman di-scroll. */
+.owner-shell .picker-map-wrap {
+  position: relative;
+  isolation: isolate;
+  z-index: 0;
 }
 
-:where(.owner-shell) .modal-footer {
-  border-top: 1px solid var(--border);
-  border-bottom: none;
-  justify-content: flex-end;
-  gap: 8px;
-}
-
-:where(.owner-shell) .modal-body {
-  padding: 18px;
-}
-
-:where(.owner-shell) .spinner-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 36px;
-  color: var(--text-muted);
-}
-
-:where(.owner-shell) .spinner {
-  width: 22px;
-  height: 22px;
-  border: 3px solid var(--primary-100);
-  border-top-color: var(--primary);
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-}
-
-:where(.owner-shell) .empty-state {
-  text-align: center;
-  padding: 32px 16px;
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-  background: #f8fafc;
-}
-
-:where(.owner-shell) .empty-icon {
-  font-size: 32px;
-  color: var(--primary);
-  margin-bottom: 8px;
-}
-
-:where(.owner-shell) .star-rating {
-  display: inline-flex;
-  gap: 2px;
-}
-
-:where(.owner-shell) .star-on {
-  color: #f59e0b;
-}
-
-:where(.owner-shell) .star-off {
-  color: #cbd5e1;
-}
-
-:where(.owner-shell) .star-btn {
-  background: transparent;
-  border: none;
-  font-size: 26px;
-  cursor: pointer;
-  padding: 2px 4px;
-}
-
-:where(.owner-shell) .custom-div-marker {
+.owner-shell .custom-div-marker {
   background: transparent;
   border: none;
 }
 
-:where(.owner-shell) .marker-pin {
+.owner-shell .marker-pin {
   width: 26px;
   height: 26px;
-  border-radius: 50% 50% 50% 0;
-  transform: rotate(-45deg);
   border: 3px solid #ffffff;
+  border-radius: 50% 50% 50% 0;
+  background: var(--success);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  transform: rotate(-45deg);
   transition: transform 0.15s ease;
 }
 
-:where(.owner-shell) .marker-pin:hover {
+.owner-shell .marker-pin:hover {
   transform: rotate(-45deg) scale(1.15);
 }
 
-:where(.owner-shell) .marker-green {
-  background: var(--success);
-}
-
-@media (max-width: 768px) {
-  :where(.owner-shell) .form-row {
-      grid-template-columns: 1fr;
-    }
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* ---------- Header halaman, kartu statistik & grafik ---------- */
-:where(.owner-shell) .page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-:where(.owner-shell) .stat-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-:where(.owner-shell) .stat-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px;
-}
-
-:where(.owner-shell) .stat-label {
-  font-size: 13px;
-  color: var(--text-muted);
-  font-weight: 600;
-}
-
-:where(.owner-shell) .stat-value {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--primary);
-  margin-top: 4px;
-}
-
-:where(.owner-shell) .stat-sub {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-top: 4px;
-}
-
-:where(.owner-shell) .chart-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-:where(.owner-shell) .stat-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-@media (max-width: 1024px) {
-  :where(.owner-shell) .stat-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-  :where(.owner-shell) .chart-grid {
-      grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 480px) {
-  :where(.owner-shell) .stat-grid {
-      grid-template-columns: 1fr;
-    }
-}
-
-.checklist-grid {
+/* ---------- Checklist fasilitas ---------- */
+.owner-shell .checklist-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
 
-.check-pill {
+/* selector dibuat lebih spesifik karena label berada di dalam .form-group; aturan umum
+   ".form-group label" (display: block) milik tema admin tidak boleh menimpa pil checklist. */
+.owner-shell .form-group label.check-pill {
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-bottom: 0;
   padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  font-size: 13px;
   cursor: pointer;
-  background: var(--surface);
 }
 
-.check-pill.checked {
-  border-color: var(--primary);
-  background: var(--primary-50);
+.owner-shell .form-group label.check-pill.checked {
   font-weight: 600;
+  background: var(--primary-50);
+  border-color: var(--primary);
 }
 
-@media (max-width: 768px) {
-  .checklist-grid { grid-template-columns: 1fr; }
+/* Dropdown (Tipe Kos, Status Kamar, dll.) selalu terbuka ke BAWAH.
+   Secara bawaan browser boleh membalik daftar ke atas (position-try-fallbacks: flip-block). */
+@supports (appearance: base-select) {
+  .owner-shell select.form-control::picker(select) {
+    position-area: block-end span-inline-end;
+    position-try-fallbacks: none;
+    max-height: min(268px, 45vh);
+  }
+}
+
+@media (max-width: 1024px) {
+  .owner-shell .checklist-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .owner-shell .kos-card-actions .btn {
+    flex: 1 1 calc(50% - 4px);
+  }
+
+  .owner-shell .checklist-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .owner-shell .picker-map {
+    height: 260px;
+  }
 }

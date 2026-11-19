@@ -62,14 +62,13 @@ export default function AdminOwnersPage() {
             Owner harus berstatus Terverifikasi sebelum dapat mempublikasikan kos ke peta.
           </p>
         </div>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+        <div className="page-actions">
           <label htmlFor="filter-status-owner" style={{ fontSize: 13, fontWeight: 600 }}>
             Status:
           </label>
           <select
             id="filter-status-owner"
             className="form-control"
-            style={{ width: 180 }}
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
@@ -90,8 +89,8 @@ export default function AdminOwnersPage() {
           />
         ) : (
           <>
-            <div className="table-responsive table-modern-wrap">
-              <table className="table table-compact table-owner table-modern">
+            <div className="table-responsive">
+              <table className="table table-owner">
                 <thead>
                   <tr>
                     <th>ID</th>

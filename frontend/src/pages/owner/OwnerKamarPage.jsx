@@ -5,6 +5,7 @@ import AppLayout from '../../components/AppLayout';
 import { EmptyState, Modal, Spinner, StatusBadge } from '../../components/Ui';
 import { useToast } from '../../context/ToastContext';
 import { formatRupiah } from '../../utils/format';
+import { Plus, Pencil, Trash2, ArrowLeft } from 'lucide-react';
 
 export default function OwnerKamarPage() {
   const { id } = useParams();
@@ -135,11 +136,13 @@ export default function OwnerKamarPage() {
             Nomor kamar unik per kos. Status <em>Dalam Booking</em> diatur otomatis oleh sistem saat pencari kos mengajukan booking.
           </p>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div className="page-actions">
           <Link to={`/owner/kos/${id}/edit`} className="btn btn-secondary">
+            <Pencil className="icon" />
             Edit Info Kos
           </Link>
           <Link to="/owner/kos" className="btn btn-secondary">
+            <ArrowLeft className="icon" />
             Kembali ke Daftar Kos
           </Link>
         </div>
@@ -148,7 +151,7 @@ export default function OwnerKamarPage() {
       <div className="card" style={{ marginBottom: 20 }}>
         <h3>Tambah Kamar Baru</h3>
         <form onSubmit={handleAdd} noValidate style={{ marginTop: 12 }}>
-          <div className="form-row" style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}>
+          <div className="form-row form-row-4">
             <div className="form-group">
               <label htmlFor="km-no">No. Kamar</label>
               <input
@@ -207,7 +210,8 @@ export default function OwnerKamarPage() {
             </div>
           </div>
           <button type="submit" className="btn btn-primary" disabled={saving}>
-            {saving ? 'Menyimpan...' : '+ Tambah Kamar'}
+            {!saving && <Plus className="icon" />}
+            {saving ? 'Menyimpan...' : 'Tambah Kamar'}
           </button>
         </form>
       </div>
@@ -236,28 +240,29 @@ export default function OwnerKamarPage() {
               <tbody>
                 {kamarList.map((km) => (
                   <tr key={km.kamar_id}>
-                    <td>
+                    <td data-label="No. Kamar">
                       <strong>No. {km.no_kamar}</strong>
                     </td>
-                    <td>{km.tipe_kamar}</td>
-                    <td>
+                    <td data-label="Tipe Kamar">{km.tipe_kamar}</td>
+                    <td data-label="Harga / Bulan">
                       <strong>{formatRupiah(km.harga)}</strong>
                     </td>
-                    <td>
+                    <td data-label="Status Kamar">
                       <StatusBadge status={km.status_kamar} />
                     </td>
-                    <td style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                    <td data-label="Keterangan" style={{ fontSize: 12, color: 'var(--text-muted)' }}>
                       {km.ada_booking_aktif
                         ? 'Terkunci oleh booking aktif (otomatis)'
                         : 'Dapat diubah manual Kosong ↔ Terisi'}
                     </td>
-                    <td>
+                    <td data-label="Aksi" className="td-aksi">
                       <div style={{ display: 'flex', gap: 8 }}>
                         <button
                           type="button"
                           className="btn btn-secondary btn-sm"
                           onClick={() => openEdit(km)}
                         >
+                          <Pencil className="icon" />
                           Edit
                         </button>
                         <button
@@ -265,6 +270,7 @@ export default function OwnerKamarPage() {
                           className="btn btn-danger btn-sm"
                           onClick={() => setDeleteTarget(km)}
                         >
+                          <Trash2 className="icon" />
                           Hapus
                         </button>
                       </div>

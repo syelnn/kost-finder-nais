@@ -4,8 +4,11 @@ import { useAuth } from '../context/AuthContext';
 import { StatusBadge } from './Ui';
 import Sidebar from './Sidebar';
 import CommandPalette from './CommandPalette';
-import { Search, ExternalLink, Menu, PanelLeft } from 'lucide-react';
+import { Search, ExternalLink, PanelLeft } from 'lucide-react';
+// Kerangka & komponen tampilan panel (dipakai Admin DAN Owner, lihat catatan di bawah).
 import '../styles/admin/layout.css';
+import '../styles/admin/dashboard.css';
+// Tambahan khusus Owner (banner status, penyesuaian halaman peta). Harus setelah admin.
 import '../styles/owner/layout.css';
 import '../styles/user/layout.css';
 
@@ -15,7 +18,7 @@ const USER_MENUS = [
   { to: '/booking-saya', label: 'Booking Saya' },
 ];
 
-// Kunci localStorage untuk mengingat sidebar Admin terakhir dibuka/ditutup.
+// Kunci localStorage untuk mengingat sidebar terakhir dibuka/ditutup (Admin & Owner).
 const SIDEBAR_COLLAPSED_KEY = 'kosfinder.admin.sidebarCollapsed';
 // Di atas lebar ini sidebar tampil permanen (bisa diciut jadi ikon). Di bawahnya jadi drawer.
 const DESKTOP_QUERY = '(min-width: 1025px)';
@@ -32,11 +35,13 @@ export default function AppLayout({ children, fullHeight = false }) {
     }
   });
   const [paletteOpen, setPaletteOpen] = useState(false);
-  const isAdmin = user?.role === 'Admin';
+  // Admin & Owner memakai kerangka panel yang sama (sidebar ciut + topbar + pencarian cepat).
+  // Yang berbeda hanya daftar menunya (lihat SIDEBAR_MENUS di Sidebar.jsx).
+  const hasPanel = user?.role === 'Admin' || user?.role === 'Owner';
 
-  // Shortcut Ctrl + K (atau Cmd + K di Mac) membuka/menutup pencarian cepat Admin.
+  // Shortcut Ctrl + K (atau Cmd + K di Mac) membuka/menutup pencarian cepat.
   useEffect(() => {
-    if (!isAdmin) return undefined;
+    if (!hasPanel) return undefined;
     const onKeyDown = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
@@ -45,7 +50,7 @@ export default function AppLayout({ children, fullHeight = false }) {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [isAdmin]);
+  }, [hasPanel]);
 
   // Simpan pilihan sidebar (diciutkan / dibentangkan) supaya tidak reset saat pindah halaman.
   useEffect(() => {
@@ -66,9 +71,19 @@ export default function AppLayout({ children, fullHeight = false }) {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [drawerOpen]);
 
+  // Layar dilebarkan ke ukuran desktop saat drawer masih terbuka: tutup drawer otomatis.
+  useEffect(() => {
+    const mq = window.matchMedia(DESKTOP_QUERY);
+    const onChange = (e) => {
+      if (e.matches) setDrawerOpen(false);
+    };
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
   // Satu tombol, dua perilaku: desktop = ciutkan/bentangkan sidebar, mobile = buka/tutup drawer.
   const handleToggleSidebar = () => {
-    if (isAdmin && window.matchMedia(DESKTOP_QUERY).matches) {
+    if (hasPanel && window.matchMedia(DESKTOP_QUERY).matches) {
       setCollapsed((c) => !c);
     } else {
       setDrawerOpen((o) => !o);
@@ -121,11 +136,11 @@ export default function AppLayout({ children, fullHeight = false }) {
   }
 
   return (
-    <div className={`dashboard-shell ${user.role === 'Admin' ? 'admin-shell' : 'owner-shell'}`}>
+    <div className={`dashboard-shell admin-shell ${user.role === 'Owner' ? 'owner-shell' : ''}`}>
       <Sidebar
         user={user}
         open={drawerOpen}
-        collapsed={isAdmin && collapsed}
+        collapsed={hasPanel && collapsed}
         onClose={() => setDrawerOpen(false)}
         onLogout={handleLogout}
       />
@@ -137,33 +152,27 @@ export default function AppLayout({ children, fullHeight = false }) {
             className="btn btn-secondary btn-sm topbar-toggle"
             onClick={handleToggleSidebar}
             aria-label="Buka atau tutup menu navigasi"
-            aria-expanded={isAdmin ? !collapsed || drawerOpen : drawerOpen}
+            aria-expanded={!collapsed || drawerOpen}
           >
-            {isAdmin ? <PanelLeft className="icon" /> : <Menu className="icon" />}
+            <PanelLeft className="icon" />
           </button>
-          {user.role === 'Admin' ? (
-            <>
-              <button
-                type="button"
-                className="topbar-search"
-                onClick={() => setPaletteOpen(true)}
-                aria-label="Buka pencarian cepat (Ctrl K)"
-              >
-                <Search className="icon" />
-                <span className="topbar-search-text">Pencarian Cepat…</span>
-                <span className="topbar-search-keys" aria-hidden="true">
-                  <kbd>Ctrl</kbd>
-                  <kbd>K</kbd>
-                </span>
-              </button>
-              <Link to="/" className="btn btn-secondary topbar-site">
-                <ExternalLink className="icon" />
-                <span>Lihat Website</span>
-              </Link>
-            </>
-          ) : (
-            <span className="brand-title">Kos Finder</span>
-          )}
+          <button
+            type="button"
+            className="topbar-search"
+            onClick={() => setPaletteOpen(true)}
+            aria-label="Buka pencarian cepat (Ctrl K)"
+          >
+            <Search className="icon" />
+            <span className="topbar-search-text">Pencarian Cepat…</span>
+            <span className="topbar-search-keys" aria-hidden="true">
+              <kbd>Ctrl</kbd>
+              <kbd>K</kbd>
+            </span>
+          </button>
+          <Link to="/" className="btn btn-secondary topbar-site">
+            <ExternalLink className="icon" />
+            <span>Lihat Website</span>
+          </Link>
           <button type="button" className="btn btn-ghost btn-sm topbar-logout" onClick={handleLogout}>
             Keluar
           </button>
@@ -178,8 +187,9 @@ export default function AppLayout({ children, fullHeight = false }) {
         <main className="dashboard-main">{children}</main>
       </div>
 
-      {isAdmin && (
+      {hasPanel && (
         <CommandPalette
+          role={user.role}
           open={paletteOpen}
           onClose={() => setPaletteOpen(false)}
           onLogout={handleLogout}

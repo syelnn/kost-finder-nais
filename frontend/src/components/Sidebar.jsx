@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { StatusBadge } from './Ui';
 import {
   LayoutDashboard, UserCheck, Layers, FileText, Building2, CirclePlus,
-  CalendarCheck, LogOut, ChevronsUpDown,
+  CalendarCheck, LogOut, ChevronsUpDown, X,
 } from 'lucide-react';
 import logoKosFinder from '../assets/logo.png';
 
 // Menu sidebar per role (Admin & Owner). Role User memakai top navbar di AppLayout.
+// Properti opsional `isActive(path)` dipakai jika sebuah menu harus tetap menyala
+// di halaman turunannya (contoh: edit kos masih bagian dari "Kelola Kos & Kamar").
 export const SIDEBAR_MENUS = {
   Admin: [
     { to: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard Admin' },
@@ -17,7 +19,14 @@ export const SIDEBAR_MENUS = {
   ],
   Owner: [
     { to: '/owner/dashboard', icon: LayoutDashboard, label: 'Dashboard Owner' },
-    { to: '/owner/kos', icon: Building2, label: 'Kelola Kos & Kamar' },
+    {
+      to: '/owner/kos',
+      icon: Building2,
+      label: 'Kelola Kos & Kamar',
+      // Tetap menyala di halaman turunannya: daftar kos, edit kos, dan kelola kamar.
+      // Halaman "Tambah Kos Baru" (/owner/kos/baru) punya menu sendiri.
+      isActive: (path) => /^\/owner\/kos(\/|$)/.test(path) && path !== '/owner/kos/baru',
+    },
     { to: '/owner/kos/baru', icon: CirclePlus, label: 'Tambah Kos Baru' },
     { to: '/owner/booking', icon: CalendarCheck, label: 'Approval Booking' },
     { to: '/owner/laporan', icon: FileText, label: 'Laporan & Backup' },
@@ -29,12 +38,13 @@ export const SIDEBAR_MENUS = {
  * Props:
  *  - user     : objek user dari useAuth()
  *  - open     : boolean, drawer terbuka (mobile)
- *  - collapsed: boolean, sidebar diciutkan jadi ikon saja (desktop, khusus Admin)
+ *  - collapsed: boolean, sidebar diciutkan jadi ikon saja (desktop, Admin & Owner)
  *  - onClose  : fungsi untuk menutup drawer
  *  - onLogout : fungsi logout
  */
 export default function Sidebar({ user, open, collapsed = false, onClose, onLogout }) {
   const menus = SIDEBAR_MENUS[user.role] || [];
+  const { pathname } = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
 
@@ -85,6 +95,15 @@ export default function Sidebar({ user, open, collapsed = false, onClose, onLogo
             <div className="brand-title">Kos Finder</div>
             <div className="brand-subtitle">Panel {user.role === 'Admin' ? 'Administrator' : 'Pemilik Kos'}</div>
           </div>
+          {/* Tombol tutup drawer: hanya tampil di HP/tablet (disembunyikan di desktop lewat CSS) */}
+          <button
+            type="button"
+            className="sidebar-close"
+            onClick={onClose}
+            aria-label="Tutup menu navigasi"
+          >
+            <X className="icon" />
+          </button>
         </div>
         <div className="sidebar-label">Menu Utama</div>
         <nav className="sidebar-nav">
@@ -96,7 +115,11 @@ export default function Sidebar({ user, open, collapsed = false, onClose, onLogo
               onClick={onClose}
               title={collapsed ? m.label : undefined}
               aria-label={m.label}
-              className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+              aria-current={(m.isActive ? m.isActive(pathname) : pathname === m.to) ? 'page' : undefined}
+              className={({ isActive }) => {
+                const active = m.isActive ? m.isActive(pathname) : isActive;
+                return `sidebar-link ${active ? 'active' : ''}`;
+              }}
             >
               <m.icon className="icon" />
               <span className="sidebar-text">{m.label}</span>

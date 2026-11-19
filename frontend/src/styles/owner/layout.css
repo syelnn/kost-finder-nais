@@ -1,297 +1,46 @@
-/* ==== OWNER (Pemilik Kos) - kerangka: warna dasar, sidebar, topbar ==== */
-/* ---------- Warna dasar (khusus Owner) ---------- */
-.owner-shell {
-  --primary: #0f766e;
-  --primary-600: #0d9488;
-  --primary-700: #0f5f59;
-  --primary-50: #f0fdfa;
-  --primary-100: #ccfbf1;
-  --text: #0f172a;
-  --text-muted: #475569;
-  --border: #e2e8f0;
-  --bg: #f8fafc;
-  --surface: #ffffff;
-  --success: #16a34a;
-  --success-bg: #dcfce7;
-  --warning: #d97706;
-  --warning-bg: #fef3c7;
-  --danger: #dc2626;
-  --danger-bg: #fee2e2;
-  --info: #0284c7;
-  --info-bg: #e0f2fe;
-  --neutral: #64748b;
-  --neutral-bg: #e2e8f0;
-  --radius: 12px;
-  --radius-sm: 8px;
-  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
-  --shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
-  --header-height: 64px;
-  color: var(--text);
-}
+/* ==== OWNER (Pemilik Kos) - tambahan di atas kerangka Admin ====
+   Panel Owner memakai kerangka & tema yang SAMA dengan Admin: pembungkusnya diberi class
+   "admin-shell owner-shell" (lihat AppLayout.jsx), sehingga warna, sidebar, topbar, kartu, tabel,
+   tombol, dan form otomatis mengikuti styles/admin/layout.css dan styles/admin/dashboard.css.
+   File ini hanya berisi hal yang khusus untuk Owner. */
 
-html,
-body {
-  margin: 0;
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  font-size: 16px;
-  line-height: 1.5;
-  background: #f8fafc;
-}
-
-:where(.owner-shell) *,
-:where(.owner-shell) *::before,
-:where(.owner-shell) *::after {
-  box-sizing: border-box;
-}
-
-:where(.owner-shell) a {
-  color: var(--primary);
-  text-decoration: none;
-}
-
-:where(.owner-shell) a:hover {
-  text-decoration: underline;
-}
-
-:where(.owner-shell) h1,
-:where(.owner-shell) h2,
-:where(.owner-shell) h3,
-:where(.owner-shell) h4 {
-  margin: 0 0 8px;
-  font-weight: 700;
-  line-height: 1.25;
-}
-
-:where(.owner-shell) h1 {
-  font-size: 24px;
-}
-
-:where(.owner-shell) h2 {
-  font-size: 20px;
-}
-
-:where(.owner-shell) h3 {
-  font-size: 16px;
-}
-
-:where(.owner-shell) p {
-  margin: 0 0 12px;
-}
-
-:where(.owner-shell) .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 16px;
-}
-
-/* ---------- Kerangka dasar sidebar & topbar ---------- */
-.owner-shell {
-  display: flex;
-  min-height: 100vh;
-}
-
-:where(.owner-shell) .sidebar {
-  width: 260px;
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-}
-
-:where(.owner-shell) .sidebar-brand {
-  padding: 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-:where(.owner-shell) .brand-title {
-  font-weight: 700;
-  font-size: 16px;
-  color: var(--primary);
-}
-
-:where(.owner-shell) .brand-subtitle {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-:where(.owner-shell) .sidebar-nav {
-  padding: 16px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-}
-
-:where(.owner-shell) .sidebar-footer {
-  padding: 16px;
-  border-top: 1px solid var(--border);
-}
-
-:where(.owner-shell) .dashboard-content {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-:where(.owner-shell) .dashboard-main {
-  padding: 24px;
-  max-width: 1280px;
-  width: 100%;
-  margin: 0 auto;
-}
-
-:where(.owner-shell) .topbar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  height: var(--header-height);
-  padding: 0 24px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  z-index: 50;
-}
-
-:where(.owner-shell) .topbar .topbar-toggle {
-  display: none;
-}
-
-:where(.owner-shell) .sidebar-label {
-  display: none;
-}
-
-:where(.owner-shell) .sidebar-link {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-decoration: none !important;
-}
-
-:where(.owner-shell) .sidebar-link.active,
-:where(.owner-shell) .sidebar-link:hover {
-  background: var(--primary-50);
-  color: var(--primary);
-}
-
-:where(.owner-shell) .sidebar-user {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-:where(.owner-shell) .sidebar-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--primary);
-  color: #ffffff;
-  display: grid;
-  place-items: center;
-  font-weight: 700;
-  text-transform: uppercase;
-  flex-shrink: 0;
-}
-
-:where(.owner-shell) .sidebar-user-info {
-  min-width: 0;
-}
-
-:where(.owner-shell) .sidebar-user-name {
-  font-weight: 700;
-  font-size: 14px;
-}
-
-:where(.owner-shell) .sidebar-user-email {
-  font-size: 12px;
-  color: var(--text-muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-:where(.owner-shell) .sidebar-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 6px;
-}
-
-:where(.owner-shell) .icon {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-}
-
-@media (max-width: 768px) {
-  :where(.owner-shell) .sidebar {
-      position: fixed;
-      inset: 0 auto 0 0;
-      z-index: 1500;
-      transform: translateX(-100%);
-      transition: transform 0.2s ease;
-    }
-
-  :where(.owner-shell) .sidebar.open {
-      transform: translateX(0);
-    }
-
-  :where(.owner-shell) .sidebar-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.45);
-      z-index: 1400;
-    }
-
-  :where(.owner-shell) .topbar {
-      padding: 0 16px;
-    }
-
-  :where(.owner-shell) .topbar .topbar-toggle {
-      display: inline-flex;
-    }
-
-  :where(.owner-shell) .dashboard-main {
-      padding: 16px;
-    }
-}
-
-.owner-shell {
-  background: var(--bg);
-}
-
-.owner-shell .topbar {
-  display: none;
-  justify-content: space-between;
-}
-
-.owner-shell .topbar-search,
-.owner-shell .topbar .topbar-site {
-  display: none;
-}
-
-.owner-shell .sidebar-link.active {
-  box-shadow: inset 3px 0 0 var(--primary);
-}
-
+/* Banner status akun Owner yang masih "Menunggu" verifikasi Admin */
 .owner-pending-banner {
-  background: var(--warning-bg);
-  color: #92400e;
-  border-bottom: 1px solid #fcd34d;
   padding: 12px 24px;
   font-size: 14px;
+  color: #92400e;
+  background: var(--warning-bg, #fef3c7);
+  border-bottom: 1px solid #fcd34d;
 }
 
 @media (max-width: 768px) {
-  .owner-shell .topbar { display: flex; }
+  .owner-pending-banner {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}
+
+/* Header Dashboard Owner di HP: judul + deskripsi, lalu tombol "Proses Booking"
+   tepat di bawahnya selebar kartu supaya rapi. Desktop tidak berubah. */
+@media (max-width: 768px) {
+  .owner-shell .page-header.owner-dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+    flex-wrap: nowrap;
+    gap: 14px;
+  }
+
+  .owner-shell .owner-dashboard-header h1 {
+    margin: 0 0 6px;
+  }
+
+  .owner-shell .owner-dashboard-header .page-actions {
+    width: 100%;
+  }
+
+  .owner-shell .owner-dashboard-header .page-actions .btn {
+    width: 100%;
+    min-height: 44px;
+    justify-content: center;
+  }
 }

@@ -457,3 +457,12 @@ body {
   font-size: 18px;
   cursor: pointer;
 }
+
+@media (max-width: 480px) {
+  .toast-container {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    max-width: none;
+  }
+}

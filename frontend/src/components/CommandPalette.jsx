@@ -10,21 +10,27 @@ const KEYWORDS = {
   '/admin/owner': 'pemilik akun verifikasi persetujuan',
   '/admin/fasilitas': 'master fasilitas wifi ac kamar mandi',
   '/admin/laporan': 'laporan backup ekspor database sql unduh',
+  '/owner/dashboard': 'beranda ringkasan okupansi pendapatan grafik',
+  '/owner/kos': 'kelola kos kamar daftar properti edit',
+  '/owner/kos/baru': 'tambah kos baru buat properti peta lokasi',
+  '/owner/booking': 'approval booking setujui tolak pengajuan survey sewa',
+  '/owner/laporan': 'laporan backup ekspor database unduh',
 };
 
 /**
- * Command palette (Ctrl + K) untuk panel Admin.
+ * Command palette (Ctrl + K) untuk panel Admin & Owner.
  * Props:
+ *  - role     : 'Admin' | 'Owner', menentukan daftar halaman (diambil dari SIDEBAR_MENUS)
  *  - open     : boolean, tampil / tidak
  *  - onClose  : fungsi menutup palette
  *  - onLogout : fungsi logout (dipakai oleh aksi "Keluar")
  */
-export default function CommandPalette({ open, onClose, onLogout }) {
+export default function CommandPalette({ role = 'Admin', open, onClose, onLogout }) {
   if (!open) return null;
-  return <PaletteDialog onClose={onClose} onLogout={onLogout} />;
+  return <PaletteDialog role={role} onClose={onClose} onLogout={onLogout} />;
 }
 
-function PaletteDialog({ onClose, onLogout }) {
+function PaletteDialog({ role, onClose, onLogout }) {
   const navigate = useNavigate();
   const inputRef = useRef(null);
   const listRef = useRef(null);
@@ -33,7 +39,7 @@ function PaletteDialog({ onClose, onLogout }) {
 
   // Daftar semua item: halaman diambil dari menu sidebar (satu sumber data).
   const items = useMemo(() => {
-    const pages = (SIDEBAR_MENUS.Admin || []).map((m) => ({
+    const pages = (SIDEBAR_MENUS[role] || []).map((m) => ({
       id: m.to,
       group: 'Halaman',
       label: m.label,
@@ -63,7 +69,7 @@ function PaletteDialog({ onClose, onLogout }) {
       },
     ];
     return [...pages, ...actions];
-  }, [navigate, onLogout]);
+  }, [navigate, onLogout, role]);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();

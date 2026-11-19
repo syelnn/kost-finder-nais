@@ -5,6 +5,7 @@ import AppLayout from '../../components/AppLayout';
 import LocationPickerMap from '../../components/LocationPickerMap';
 import { KosImage, Modal, Spinner } from '../../components/Ui';
 import { useToast } from '../../context/ToastContext';
+import { DoorOpen, Trash2, Upload, Save, X } from 'lucide-react';
 import '../../styles/owner/pages.css';
 
 export default function OwnerKosFormPage() {
@@ -178,15 +179,13 @@ export default function OwnerKosFormPage() {
             Isi informasi kos, klik peta untuk menentukan koordinat, pilih fasilitas, dan unggah foto (1–5 foto).
           </p>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div className="page-actions">
           {isEdit && (
             <Link to={`/owner/kos/${id}/kamar`} className="btn btn-ghost">
+              <DoorOpen className="icon" />
               Kelola Kamar Kos Ini
             </Link>
           )}
-          <Link to="/owner/kos" className="btn btn-secondary">
-            Kembali ke Daftar Kos
-          </Link>
         </div>
       </div>
 
@@ -296,6 +295,12 @@ export default function OwnerKosFormPage() {
                 );
               })}
             </div>
+            {!loading && masterFasilitas.length === 0 && (
+              <div className="field-hint">
+                Daftar fasilitas masih kosong. Admin perlu menambahkannya terlebih dahulu di menu Master Fasilitas.
+              </div>
+            )}
+
             {errors.fasilitas && <div className="field-error">{errors.fasilitas}</div>}
           </div>
 
@@ -325,8 +330,7 @@ export default function OwnerKosFormPage() {
                     <KosImage
                       path={ft.path_foto}
                       alt="Foto kos"
-                      className="kos-card-thumb"
-                      style={{ width: '100%', height: 100 }}
+                      className="kos-card-thumb kos-foto-thumb"
                     />
                     <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4, wordBreak: 'break-all' }}>
                       {ft.path_foto}
@@ -337,6 +341,7 @@ export default function OwnerKosFormPage() {
                       style={{ marginTop: 6 }}
                       onClick={() => setDeleteFotoTarget(ft)}
                     >
+                      <Trash2 className="icon" />
                       Hapus Foto
                     </button>
                   </div>
@@ -362,6 +367,7 @@ export default function OwnerKosFormPage() {
                     onClick={handleUploadOnly}
                     disabled={uploadingFoto}
                   >
+                    {!uploadingFoto && <Upload className="icon" />}
                     {uploadingFoto ? 'Mengunggah...' : `Unggah ${newFiles.length} Foto Sekarang`}
                   </button>
                 )}
@@ -373,9 +379,11 @@ export default function OwnerKosFormPage() {
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 20 }}>
             <Link to="/owner/kos" className="btn btn-secondary">
+              <X className="icon" />
               Batal
             </Link>
             <button type="submit" className="btn btn-primary" disabled={saving}>
+              {!saving && <Save className="icon" />}
               {saving ? 'Menyimpan...' : isEdit ? 'Simpan Perubahan' : 'Simpan & Lanjut ke Kamar'}
             </button>
           </div>

@@ -6,6 +6,7 @@ import { EmptyState, KosImage, Modal, Spinner, StatusBadge } from '../../compone
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { formatRating, formatRupiah } from '../../utils/format';
+import { Plus, DoorOpen, Pencil, Eye, EyeOff, Trash2, Star } from 'lucide-react';
 
 export default function OwnerKosListPage() {
   const { user } = useAuth();
@@ -75,7 +76,8 @@ export default function OwnerKosListPage() {
           </p>
         </div>
         <Link to="/owner/kos/baru" className="btn btn-primary">
-          + Tambah Kos Baru
+          <Plus className="icon" />
+          Tambah Kos Baru
         </Link>
       </div>
 
@@ -85,70 +87,56 @@ export default function OwnerKosListPage() {
         <EmptyState
           title="Anda belum memiliki data kos"
           description="Mulai tambahkan kos pertama Anda lengkap dengan titik lokasi di peta."
-          actionLabel="+ Tambah Kos Baru"
+          actionLabel={
+            <>
+              <Plus className="icon" />
+              Tambah Kos Baru
+            </>
+          }
           onAction={() => navigate('/owner/kos/baru')}
         />
       ) : (
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(330px, 1fr))',
-            gap: 16,
-          }}
-        >
+        <div className="kos-grid">
           {kosList.map((k) => (
-            <div key={k.kos_id} className="card" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <div style={{ position: 'relative' }}>
-                <KosImage
-                  path={k.foto}
-                  alt={k.nama_kos}
-                  className="kos-card-thumb"
-                  style={{ width: '100%', height: 170 }}
-                />
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+            <div key={k.kos_id} className="card kos-card">
+              <KosImage path={k.foto} alt={k.nama_kos} className="kos-card-thumb" />
+              <div className="kos-card-head">
                 <div>
                   <h3 style={{ marginBottom: 4 }}>{k.nama_kos}</h3>
                   <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{k.alamat}</div>
                 </div>
-                <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                <div className="kos-card-badges">
                   <StatusBadge status={k.tipe_kos} />
                   <StatusBadge status={k.status_verifikasi} />
                 </div>
               </div>
 
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(3, 1fr)',
-                  gap: 8,
-                  padding: '10px 12px',
-                  background: '#f8fafc',
-                  borderRadius: 8,
-                  fontSize: 12,
-                }}
-              >
+              <div className="kos-card-stats">
                 <div>
-                  <div style={{ color: 'var(--text-muted)' }}>Harga Mulai</div>
+                  <div>Harga Mulai</div>
                   <strong>{k.harga_mulai !== null ? formatRupiah(k.harga_mulai) : 'Belum ada'}</strong>
                 </div>
                 <div>
-                  <div style={{ color: 'var(--text-muted)' }}>Kamar Kosong</div>
+                  <div>Kamar Kosong</div>
                   <strong>
                     {k.kamar_kosong} / {k.jumlah_kamar}
                   </strong>
                 </div>
                 <div>
-                  <div style={{ color: 'var(--text-muted)' }}>Rating</div>
-                  <strong>★ {formatRating(k.rata_rating)}</strong>
+                  <div>Rating</div>
+                  <strong>
+                    <Star className="icon-star" /> {formatRating(k.rata_rating)}
+                  </strong>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 'auto' }}>
+              <div className="kos-card-actions">
                 <Link to={`/owner/kos/${k.kos_id}/kamar`} className="btn btn-primary btn-sm">
+                  <DoorOpen className="icon" />
                   Kelola Kamar ({k.jumlah_kamar})
                 </Link>
                 <Link to={`/owner/kos/${k.kos_id}/edit`} className="btn btn-secondary btn-sm">
+                  <Pencil className="icon" />
                   Edit Kos & Foto
                 </Link>
                 <button
@@ -164,6 +152,7 @@ export default function OwnerKosListPage() {
                   }
                   onClick={() => handleToggleStatus(k)}
                 >
+                  {k.status_verifikasi === 'Aktif' ? <EyeOff className="icon" /> : <Eye className="icon" />}
                   {togglingId === k.kos_id
                     ? 'Memproses...'
                     : k.status_verifikasi === 'Aktif'
@@ -175,6 +164,7 @@ export default function OwnerKosListPage() {
                   className="btn btn-danger btn-sm"
                   onClick={() => setDeleteTarget(k)}
                 >
+                  <Trash2 className="icon" />
                   Hapus
                 </button>
               </div>
