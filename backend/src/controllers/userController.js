@@ -3,8 +3,11 @@ const { AppError, ok, created } = require('../utils/http');
 const { syncRoomStatus, autoSelesaiSafe, isPastDate } = require('../services/bookingService');
 
 // ======================== PENCARIAN KOS ========================
+// Escape karakter khusus LIKE (\, %, _) agar kata kunci pengguna dicari apa adanya.
+const escapeLike = (s) => s.replace(/[\\%_]/g, (ch) => `\\${ch}`);
+
 async function searchKos(req, res) {
-  const { lat, lng, radius, hargaMin, hargaMax, fasilitas, tipe } = req.validQuery;
+  const { lat, lng, radius, hargaMin, hargaMax, fasilitas, tipe, q } = req.validQuery;
   const params = [];
   const where = [`v.status_verifikasi = 'Aktif'`];
   const p = (val) => {
@@ -32,6 +35,11 @@ async function searchKos(req, res) {
     );
   }
   if (tipe) where.push(`v.tipe_kos = ${p(tipe)}`);
+  if (q) {
+    // Pencarian teks bebas: nama kos, alamat, atau wilayah (parameterized, bukan string concat).
+    const ref = p(`%${escapeLike(q)}%`);
+    where.push(`(v.nama_kos ILIKE ${ref} OR v.alamat ILIKE ${ref} OR v.wilayah ILIKE ${ref})`);
+  }
 
   const { rows } = await query(
     `SELECT v.kos_id, v.nama_kos, v.alamat, v.latitude, v.longitude, v.tipe_kos, v.wilayah,
@@ -172,4 +180,22 @@ async function createReview(req, res) {
   return created(res, review, 'Terima kasih! Review Anda berhasil dikirim.');
 }
 
-module.exports = { searchKos, detailKos, createBooking, myBookings, createReview };
+/** GET /api/review/saya - semua review milik user yang login (user_id dari token JWT). */
+async function myReviews(req, res) {
+  const { rows } = await query(
+    `SELECT r.review_id, r.booking_id, r.rating, r.komentar, r.dibuat_pada AS tanggal,
+            k.kos_id, k.nama_kos, k.status_verifikasi AS status_kos,
+            km.no_kamar, km.tipe_kamar,
+            (SELECT f.path_foto FROM foto_kos f WHERE f.kos_id = k.kos_id ORDER BY f.foto_id LIMIT 1) AS foto
+       FROM review r
+       JOIN booking b ON b.booking_id = r.booking_id
+       JOIN kamar km ON km.kamar_id = b.kamar_id
+       JOIN kos k ON k.kos_id = km.kos_id
+      WHERE b.user_id = $1
+      ORDER BY r.dibuat_pada DESC`,
+    [req.user.user_id]
+  );
+  return ok(res, rows);
+}
+
+module.exports = { searchKos, detailKos, createBooking, myBookings, createReview, myReviews };

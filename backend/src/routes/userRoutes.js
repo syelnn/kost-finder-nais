@@ -16,6 +16,7 @@ const searchQuery = z
     radius: emptyToUndef(
       z.coerce.number({ invalid_type_error: 'Radius tidak valid.' }).min(0.1, 'Radius minimal 0,1 km.').max(100, 'Radius maksimal 100 km.').optional()
     ),
+    q: emptyToUndef(z.string({ invalid_type_error: 'Kata kunci tidak valid.' }).trim().max(100, 'Kata kunci maksimal 100 karakter.').optional()),
     hargaMin: emptyToUndef(z.coerce.number({ invalid_type_error: 'Harga minimum tidak valid.' }).int().min(0, 'Harga minimum tidak boleh negatif.').optional()),
     hargaMax: emptyToUndef(z.coerce.number({ invalid_type_error: 'Harga maksimum tidak valid.' }).int().min(0, 'Harga maksimum tidak boleh negatif.').optional()),
     fasilitas: emptyToUndef(
@@ -56,10 +57,14 @@ const reviewBody = z.object({
   komentar: optionalText(1000, 'Komentar'),
 });
 
+// Daftar kos Aktif untuk landing page (tamu belum login). Hanya baca; data sama dengan GET /kos.
+// Harus didaftarkan SEBELUM '/kos/:id' agar "publik" tidak dibaca sebagai id.
+router.get('/kos/publik', validate({ query: searchQuery }), asyncHandler(ctrl.searchKos));
 router.get('/kos', authenticate, authorize('User'), validate({ query: searchQuery }), asyncHandler(ctrl.searchKos));
 router.get('/kos/:id', authenticate, authorize('User'), validate({ params: idParam }), asyncHandler(ctrl.detailKos));
 router.post('/booking', authenticate, authorize('User'), validate({ body: bookingBody }), asyncHandler(ctrl.createBooking));
 router.get('/booking/saya', authenticate, authorize('User'), asyncHandler(ctrl.myBookings));
+router.get('/review/saya', authenticate, authorize('User'), asyncHandler(ctrl.myReviews));
 router.post(
   '/booking/:id/review',
   authenticate,

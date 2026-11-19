@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth, roleHomePath } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { getErrorMessage, getFieldErrors } from '../../api/client';
+import { safeFrom } from '../../components/ProtectedRoute';
 import '../../styles/auth/auth.css';
 
 const DUMMY_ACCOUNTS = [
@@ -16,6 +17,7 @@ export default function LoginPage() {
   const { login } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -28,7 +30,8 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       const res = await login(email, password);
-      navigate(roleHomePath(res.data.user.role), { replace: true });
+      showToast(res.message || 'Login berhasil.', 'success');
+      navigate(safeFrom(location) || roleHomePath(res.data.user.role), { replace: true });
     } catch (err) {
       setErrors(getFieldErrors(err));
       showToast(getErrorMessage(err, 'Email atau password salah.'), 'error');
@@ -49,7 +52,7 @@ export default function LoginPage() {
         <div className="auth-header">
           <Link to="/" className="brand-logo">
             <span className="brand-mark">⌂</span>
-            <span>Kos Finder</span>
+            <span>Kos Nais</span>
           </Link>
           <h1>Masuk ke Akun Anda</h1>
           <p>Gunakan email dan password terdaftar untuk mengakses fitur sesuai peran.</p>

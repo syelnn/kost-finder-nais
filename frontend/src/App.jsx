@@ -16,6 +16,7 @@ import OwnerBookingPage from './pages/owner/OwnerBookingPage';
 import UserMapPage from './pages/user/UserMapPage';
 import UserKosDetailPage from './pages/user/UserKosDetailPage';
 import UserBookingsPage from './pages/user/UserBookingsPage';
+import UserReviewsPage from './pages/user/UserReviewsPage';
 import LaporanPage from './pages/LaporanPage';
 
 
@@ -62,6 +63,14 @@ export default function App() {
         element={
           <ProtectedRoute roles={['User']}>
             <UserBookingsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/review-saya"
+        element={
+          <ProtectedRoute roles={['User']}>
+            <UserReviewsPage />
           </ProtectedRoute>
         }
       />
