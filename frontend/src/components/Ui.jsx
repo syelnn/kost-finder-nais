@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Building2, X } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Building2, Star, X } from 'lucide-react';
 import { fotoUrl, placeholderSvgDataUri } from '../utils/format';
 
 const BADGE_MAP = {
@@ -19,6 +19,8 @@ const BADGE_MAP = {
   Admin: 'badge-teal',
   Owner: 'badge-info',
   User: 'badge-success',
+  survey: 'badge-info',
+  sewa: 'badge-teal',
 };
 
 export function StatusBadge({ status, children }) {
@@ -63,14 +65,37 @@ export function Modal({
   danger = false,
   loading = false,
 }) {
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape' && !loading && onClose) onClose();
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [open, loading, onClose]);
+
   if (!open) return null;
   return (
-    <div className="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <div className="modal-card">
+    <div
+      className="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+      onClick={() => {
+        if (!loading && onClose) onClose();
+      }}
+    >
+      <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h3 id="modal-title">{title}</h3>
-          <button type="button" className="btn-icon" onClick={onClose} aria-label="Tutup dialog">
-            <X size={20} />
+          <button
+            type="button"
+            className="btn-icon"
+            onClick={onClose}
+            disabled={loading}
+            aria-label="Tutup dialog"
+          >
+            <X size={20} strokeWidth={2} aria-hidden="true" />
           </button>
         </div>
         <div className="modal-body">{children}</div>
@@ -96,12 +121,13 @@ export function Modal({
 
 export function StarRating({ value = 0, onChange, readOnly = false, size = 'md' }) {
   const rounded = Math.round(Number(value) || 0);
+  const iconSize = size === 'sm' ? 14 : readOnly ? 16 : 22;
   return (
     <div className={`star-rating star-${size}`} role={readOnly ? 'img' : 'radiogroup'} aria-label={`Rating ${value} dari 5`}>
       {[1, 2, 3, 4, 5].map((star) =>
         readOnly ? (
           <span key={star} className={star <= rounded ? 'star-on' : 'star-off'} aria-hidden="true">
-            ★
+            <Star size={iconSize} strokeWidth={2} fill={star <= rounded ? 'currentColor' : 'none'} />
           </span>
         ) : (
           <button
@@ -110,8 +136,9 @@ export function StarRating({ value = 0, onChange, readOnly = false, size = 'md' 
             className={`star-btn ${star <= value ? 'star-on' : 'star-off'}`}
             onClick={() => onChange && onChange(star)}
             aria-label={`Pilih ${star} bintang`}
+            aria-pressed={star <= value}
           >
-            ★
+            <Star size={iconSize} strokeWidth={2} fill={star <= value ? 'currentColor' : 'none'} aria-hidden="true" />
           </button>
         )
       )}

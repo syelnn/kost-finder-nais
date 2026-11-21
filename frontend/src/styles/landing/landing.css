@@ -1,0 +1,1479 @@
+/* =====================================================================
+   LANDING PAGE — SATU FILE CSS
+   Dipakai oleh: src/pages/auth/LandingPage.jsx
+
+   CARA PAKAI (singkat)
+   ---------------------------------------------------------------------
+   Mau ganti warna?  -> cukup ubah nilai di bagian "1. WARNA & TEMA".
+   Mau ganti bentuk? -> ubah "radius" & "bayangan" di bagian yang sama.
+   Mau ganti font?   -> ubah --lp-font di bagian yang sama.
+   Sisanya (bagian 2 dst.) tidak perlu disentuh, semuanya otomatis
+   mengikuti nilai di bagian 1.
+
+   DAFTAR ISI
+     1. WARNA & TEMA   <- ubah tampilan di sini
+     2. Dasar (reset ringan, container, teks)
+     3. Komponen umum (tombol, chip, skeleton, judul section)
+     4. Navbar
+     5. Hero (judul, pencarian, carousel)
+     6. Kost Tersedia
+     7. Tentang Kami
+     8. Footer
+
+   Semua aturan umum di-scope dengan ".landing-page" sehingga TIDAK
+   mengubah halaman lain (login, register, dashboard, dll.).
+   ===================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+/* =====================================================================
+   1. WARNA & TEMA  (UBAH DI SINI)
+   ===================================================================== */
+.landing-page {
+  /* ----- Warna utama (default: teal) -----
+     Contoh ganti ke biru : primary #2563eb, primary-dark #1d4ed8, secondary #0ea5e9
+     Contoh ganti ke ungu : primary #7c3aed, primary-dark #6d28d9, secondary #db2777
+     Setelah itu sesuaikan juga 3 warna "lembut" di bawahnya. */
+  --lp-primary: #0f766e;
+  /* warna tombol, ikon, harga */
+  --lp-primary-dark: #115e59;
+  /* teks di atas latar lembut, hover */
+  --lp-secondary: #0e7490;
+  /* pasangan gradient (ujung kanan) */
+
+  --lp-primary-soft: #f0fdfa;
+  /* latar sangat lembut (chip, hover menu) */
+  --lp-primary-softer: #ccfbf1;
+  /* garis tepi / latar ikon lembut */
+  --lp-glow: rgba(15, 118, 110, 0.35);
+  /* warna bayangan tombol */
+
+  /* ----- Gradient (dipakai tombol, ikon, garis aksen) ----- */
+  --lp-gradient: linear-gradient(135deg, var(--lp-primary) 0%, var(--lp-secondary) 100%);
+
+  /* ----- Warna teks & latar ----- */
+  --lp-text: #0b1b2b;
+  /* teks utama */
+  --lp-text-muted: #475569;
+  /* teks sekunder */
+  --lp-bg: #f8fafc;
+  /* latar halaman */
+  --lp-card: #ffffff;
+  /* latar kartu */
+  --lp-line: #e2e8f0;
+  /* garis tepi */
+  --lp-footer-bg: #0b1220;
+  /* latar footer */
+
+  /* ----- Warna kecil lainnya ----- */
+  --lp-star: #f59e0b;
+  /* bintang rating */
+  --lp-success-bg: #dcfce7;
+  /* chip "kamar kosong" */
+  --lp-success-text: #166534;
+  --lp-danger: #b91c1c;
+  /* tombol keluar & pesan error */
+  --lp-danger-bg: #fef2f2;
+
+  /* ----- Bentuk & bayangan ----- */
+  --lp-radius-sm: 10px;
+  --lp-radius: 16px;
+  --lp-radius-lg: 24px;
+  --lp-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05), 0 2px 8px rgba(15, 23, 42, 0.04);
+  --lp-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.18);
+  --lp-shadow-lg: 0 30px 60px -20px rgba(15, 23, 42, 0.35);
+
+  /* ----- Font & ukuran ----- */
+  --lp-font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --lp-navbar-height: 72px;
+  /* juga dipakai agar judul section tidak tertutup navbar */
+  --lp-page-width: 1200px;
+
+  /* ----- Gaya dasar halaman ----- */
+  min-height: 100dvh;
+  overflow-x: clip;
+  background: var(--lp-bg);
+  color: var(--lp-text);
+  font-family: var(--lp-font);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.landing-page img {
+  max-width: 100%;
+}
+
+/* =====================================================================
+   2. DASAR
+   ===================================================================== */
+.landing-page,
+.landing-page *,
+.landing-page *::before,
+.landing-page *::after {
+  box-sizing: border-box;
+}
+
+.landing-page a {
+  color: var(--lp-primary);
+  text-decoration: none;
+}
+
+.landing-page h1,
+.landing-page h2,
+.landing-page h3 {
+  margin: 0 0 8px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.landing-page h1 {
+  font-size: 24px;
+}
+
+.landing-page h2 {
+  font-size: 20px;
+}
+
+.landing-page h3 {
+  font-size: 16px;
+}
+
+.landing-page p {
+  margin: 0 0 12px;
+}
+
+.landing-page .container {
+  max-width: var(--lp-page-width);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* teks khusus pembaca layar (disembunyikan secara visual) */
+.landing-page .lp-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* fokus keyboard yang jelas */
+.landing-page a:focus-visible,
+.landing-page button:focus-visible,
+.landing-page input:focus-visible {
+  outline: 3px solid var(--lp-primary);
+  outline-offset: 3px;
+}
+
+/* =====================================================================
+   3. KOMPONEN UMUM
+   ===================================================================== */
+
+/* ---------- Tombol: .btn  .btn-primary  .btn-secondary  .btn-lg  .btn-block ---------- */
+.landing-page .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 20px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.landing-page .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.landing-page .btn-primary {
+  background: var(--lp-gradient);
+  color: #ffffff;
+  box-shadow: 0 8px 18px -8px var(--lp-glow);
+}
+
+.landing-page .btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 24px -10px var(--lp-glow);
+}
+
+.landing-page .btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.landing-page .btn-secondary {
+  background: var(--lp-card);
+  color: var(--lp-text);
+  border-color: var(--lp-line);
+}
+
+.landing-page .btn-secondary:hover:not(:disabled) {
+  background: var(--lp-primary-soft);
+  border-color: var(--lp-primary-softer);
+}
+
+.landing-page .btn-lg {
+  min-height: 52px;
+  padding: 12px 30px;
+  font-size: 16px;
+}
+
+.landing-page .btn-block {
+  width: 100%;
+}
+
+/* ---------- Logo (navbar & footer) ---------- */
+.landing-page .brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--lp-text);
+}
+
+.landing-page .brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--lp-gradient);
+  color: #ffffff;
+  font-size: 19px;
+  font-weight: 700;
+  box-shadow: 0 8px 16px -8px var(--lp-glow);
+}
+
+.brand-logo-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo-img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .brand-logo-img {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* ---------- Chip kecil (tipe kos, jumlah kamar kosong) ---------- */
+.landing-page .lp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--lp-primary-soft);
+  border: 1px solid var(--lp-primary-softer);
+  color: var(--lp-primary-dark);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.landing-page .lp-chip-success {
+  background: var(--lp-success-bg);
+  border-color: transparent;
+  color: var(--lp-success-text);
+}
+
+/* ---------- Skeleton (placeholder saat loading) ---------- */
+.landing-page .lp-skeleton {
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 37%, #e2e8f0 63%);
+  background-size: 400% 100%;
+  animation: lp-shimmer 1.4s ease infinite;
+}
+
+.landing-page .lp-skel-line {
+  height: 14px;
+  border-radius: 6px;
+}
+
+@keyframes lp-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+/* ---------- Empty state (komponen EmptyState dari Ui.jsx) ---------- */
+.landing-page .empty-state {
+  padding: 48px 24px;
+  text-align: center;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: var(--lp-radius-lg);
+  background: var(--lp-card);
+}
+
+.landing-page .empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 12px;
+  border-radius: 20px;
+  background: var(--lp-primary-soft);
+  color: var(--lp-primary);
+}
+
+.landing-page .empty-state p {
+  max-width: 420px;
+  margin: 0 auto;
+  color: var(--lp-text-muted);
+}
+
+/* ---------- Section & judul section ---------- */
+.landing-page .lp-section {
+  padding: 96px 0;
+  scroll-margin-top: var(--lp-navbar-height);
+}
+
+.landing-page .lp-section-head {
+  max-width: 640px;
+  margin: 0 auto 56px;
+  text-align: center;
+}
+
+.landing-page .lp-section-head h2 {
+  margin-bottom: 16px;
+  font-size: clamp(26px, 3.4vw, 38px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* garis aksen kecil di bawah judul */
+.landing-page .lp-section-head h2::after {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 4px;
+  margin: 14px auto 0;
+  border-radius: 999px;
+  background: var(--lp-gradient);
+}
+
+.landing-page .lp-section-head p {
+  margin: 0;
+  font-size: 17px;
+  color: var(--lp-text-muted);
+}
+
+.landing-page .lp-section-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 48px;
+}
+
+@media (max-width: 768px) {
+  .landing-page {
+    --lp-navbar-height: 64px;
+  }
+
+  .landing-page .container {
+    padding: 0 16px;
+  }
+
+  .landing-page .lp-section {
+    padding: 60px 0;
+  }
+
+  .landing-page .lp-section-head {
+    margin-bottom: 36px;
+  }
+
+  .landing-page .lp-section-head p {
+    font-size: 16px;
+  }
+}
+
+/* =====================================================================
+   4. NAVBAR  (kaca blur, menyatu saat di atas, bayangan saat di-scroll)
+   ===================================================================== */
+.lp-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: var(--lp-navbar-height);
+  background: rgba(255, 255, 255, 0.7);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  backdrop-filter: saturate(180%) blur(16px);
+  border-bottom: 1px solid transparent;
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* class "is-scrolled" ditambahkan oleh JSX saat halaman di-scroll */
+.lp-navbar.is-scrolled {
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom-color: var(--lp-line);
+  box-shadow: 0 10px 30px -18px rgba(15, 23, 42, 0.35);
+}
+
+.lp-navbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 100%;
+}
+
+/* panel menu = link + tombol aksi */
+.lp-nav-panel {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.lp-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.landing-page .lp-nav-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--lp-text-muted);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.landing-page .lp-nav-link:hover {
+  background: var(--lp-primary-soft);
+  color: var(--lp-primary);
+}
+
+.lp-nav-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.lp-nav-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.landing-page .lp-nav-map-btn {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* penahan ukuran agar tombol tidak "berkedip" saat status login diperiksa */
+.lp-auth-placeholder {
+  display: inline-block;
+  width: 140px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--lp-line);
+}
+
+/* tombol hamburger (hanya tampil di mobile) */
+.lp-burger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--lp-line);
+  border-radius: 12px;
+  background: var(--lp-card);
+  color: var(--lp-text);
+  cursor: pointer;
+}
+
+@keyframes lp-pop {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* tablet sempit: rapatkan jarak & tampilkan pemicu akun sebagai avatar saja agar tidak sesak */
+@media (max-width: 960px) and (min-width: 769px) {
+  .lp-nav-panel {
+    gap: 12px;
+  }
+
+  .landing-page .lp-nav-link {
+    padding: 0 10px;
+  }
+
+  .lp-nav-user .acct .acct-trigger {
+    padding: 3px;
+  }
+
+  .lp-nav-user .acct .acct-name,
+  .lp-nav-user .acct .acct-chevron {
+    display: none;
+  }
+}
+
+/* mobile: menu jadi drawer rapi di bawah navbar; tombol & akun bertumpuk vertikal */
+@media (max-width: 768px) {
+  .lp-burger {
+    display: inline-flex;
+  }
+
+  .lp-nav-panel {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: calc(100dvh - var(--lp-navbar-height));
+    overflow-y: auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 12px 16px 20px;
+    background: var(--lp-card);
+    border-bottom: 1px solid var(--lp-line);
+    box-shadow: var(--lp-shadow);
+  }
+
+  .lp-nav-panel.open {
+    display: flex;
+    animation: lp-pop 0.18s ease-out;
+  }
+
+  .lp-nav-links {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .landing-page .lp-nav-link {
+    border-radius: var(--lp-radius-sm);
+  }
+
+  .lp-nav-actions,
+  .lp-nav-user,
+  .lp-nav-actions>.btn,
+  .landing-page .lp-nav-map-btn {
+    width: 100%;
+  }
+
+  .lp-nav-user {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding-top: 8px;
+    border-top: 1px solid var(--lp-line);
+  }
+
+  /* Di dalam drawer mobile: menu akun tampil penuh & dropdown melebar dalam alur (tidak meluber/menimpa). */
+  .lp-nav-panel .acct {
+    width: 100%;
+  }
+
+  .lp-nav-panel .acct .acct-trigger {
+    width: 100%;
+    max-width: none;
+    padding: 6px 12px 6px 6px;
+    justify-content: space-between;
+  }
+
+  .lp-nav-panel .acct .acct-name {
+    display: block;
+    flex: 1;
+    max-width: none;
+    text-align: left;
+  }
+
+  .lp-nav-panel .acct .acct-chevron {
+    display: block;
+  }
+
+  .lp-nav-panel .acct .acct-menu {
+    position: static;
+    width: 100%;
+    margin-top: 8px;
+    border-radius: 12px;
+    box-shadow: none;
+    animation: none;
+  }
+}
+
+/* =====================================================================
+   5. HERO  (urutan: latar -> judul -> pencarian -> carousel)
+   ===================================================================== */
+.lp-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 72px 0 96px;
+  background:
+    radial-gradient(60% 50% at 12% 0%, rgba(20, 184, 166, 0.22), transparent 70%),
+    radial-gradient(50% 45% at 92% 8%, rgba(6, 182, 212, 0.18), transparent 70%),
+    linear-gradient(180deg, var(--lp-primary-soft) 0%, var(--lp-bg) 100%);
+}
+
+/* pola titik halus */
+.lp-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(var(--lp-glow) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.5;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 65%);
+  mask-image: linear-gradient(180deg, #000 0%, transparent 65%);
+}
+
+/* ----- Judul ----- */
+.lp-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 480px);
+  gap: 48px;
+  align-items: center;
+  animation: lp-rise 0.6s ease-out both;
+}
+
+.lp-hero-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.lp-hero-right {
+  display: flex;
+  justify-content: center;
+}
+
+.lp-hero-head {
+  max-width: 780px;
+  margin: 0 auto 36px;
+  text-align: center;
+  animation: lp-rise 0.6s ease-out both;
+}
+
+.lp-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 22px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: var(--lp-card);
+  border: 1px solid var(--lp-primary-softer);
+  box-shadow: var(--lp-shadow-sm);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--lp-primary-dark);
+}
+
+.lp-eyebrow::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #14b8a6;
+  box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.2);
+}
+
+.landing-page .lp-hero-head h1,
+.landing-page .lp-hero-left h1 {
+  margin-bottom: 24px;
+  font-size: clamp(34px, 5.6vw, 60px);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+/* kata "Kos Impian" berwarna gradient */
+.lp-hero-accent {
+  background: var(--lp-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.landing-page .lp-hero-head p,
+.landing-page .lp-hero-left p {
+  max-width: 620px;
+  margin: 0 auto 36px;
+  line-height: 1.65;
+  font-size: clamp(16px, 2vw, 19px);
+  color: var(--lp-text-muted);
+}
+
+/* ----- Kolom pencarian ----- */
+.lp-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 740px;
+  margin: 0 0 0;
+  padding: 8px;
+  background: var(--lp-card);
+  border: 1px solid var(--lp-line);
+  border-radius: 999px;
+  box-shadow: var(--lp-shadow);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  animation: lp-rise 0.6s 0.1s ease-out both;
+}
+
+.lp-search:focus-within {
+  border-color: var(--lp-primary);
+  box-shadow: 0 0 0 4px var(--lp-primary-softer), var(--lp-shadow);
+}
+
+.lp-search-field {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 18px;
+  color: var(--lp-primary);
+}
+
+.landing-page .lp-search-field input {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 16px;
+  color: var(--lp-text);
+}
+
+.lp-search-field input::placeholder {
+  color: #64748b;
+}
+
+/* fokus ditampilkan lewat :focus-within pada .lp-search */
+.landing-page .lp-search-field input:focus-visible {
+  outline: none;
+}
+
+.landing-page .lp-search .btn {
+  min-height: 48px;
+  padding: 0 30px;
+}
+
+/* ----- Carousel ----- */
+.lp-carousel {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  max-width: 480px;
+  width: 100%;
+  min-height: 0;
+  border-radius: 24px;
+  background: #0f172a;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.75), 0 20px 40px -15px rgba(15, 23, 42, 0.3);
+  animation: lp-rise 0.7s 0.2s ease-out both;
+}
+
+.lp-carousel-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.45s cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: transform;
+}
+
+.lp-slide {
+  position: relative;
+  flex: 0 0 100%;
+  height: 100%;
+}
+
+.lp-slide-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* keterangan di pojok kiri bawah foto */
+.lp-slide-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 90px 32px 52px;
+  color: #ffffff;
+  background: linear-gradient(to top, rgba(8, 20, 32, 0.88), rgba(8, 20, 32, 0));
+}
+
+.lp-slide-caption strong {
+  font-size: clamp(20px, 2.8vw, 32px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.lp-slide-caption span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* tombol panah */
+.lp-carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: var(--lp-text);
+  cursor: pointer;
+  box-shadow: var(--lp-shadow-sm);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.lp-carousel-btn:hover {
+  background: #ffffff;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.lp-prev {
+  left: 16px;
+}
+
+.lp-next {
+  right: 16px;
+}
+
+/* titik indikator */
+.lp-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+}
+
+.lp-dot {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.lp-dot::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  transition: width 0.25s ease, background 0.25s ease;
+}
+
+.lp-dot.active::before {
+  width: 28px;
+  background: #ffffff;
+}
+
+/* animasi masuk (dipakai judul, pencarian, carousel) */
+@keyframes lp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .lp-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .lp-hero-left {
+    align-items: center;
+    text-align: center;
+  }
+
+  .lp-hero-right {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .lp-search {
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .lp-hero {
+    padding: 40px 0 52px;
+  }
+
+  .lp-hero-head {
+    margin-bottom: 24px;
+  }
+
+  .lp-search {
+    margin-bottom: 0;
+  }
+
+  .lp-carousel {
+    aspect-ratio: 4 / 3;
+    min-height: 0;
+    border-radius: 20px;
+  }
+
+  .lp-slide-caption {
+    padding: 56px 18px 44px;
+  }
+
+  .lp-carousel-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .landing-page .lp-search-clear {
+    min-height: 44px;
+  }
+
+  .lp-prev {
+    left: 10px;
+  }
+
+  .lp-next {
+    right: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .lp-search {
+    flex-wrap: wrap;
+    border-radius: 24px;
+  }
+
+  .lp-search-field {
+    flex-basis: 100%;
+  }
+
+  .landing-page .lp-search .btn {
+    width: 100%;
+  }
+}
+
+/* =====================================================================
+   6. KOST TERSEDIA  (ringkasan pencarian + grid kartu kos)
+   ===================================================================== */
+.lp-search-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 12px 16px;
+  border-radius: var(--lp-radius);
+  background: var(--lp-primary-soft);
+  border: 1px solid var(--lp-primary-softer);
+  color: var(--lp-text);
+  font-size: 14.5px;
+}
+
+.landing-page .lp-search-clear {
+  min-height: 38px;
+  padding: 6px 14px;
+  font-size: 13px;
+}
+
+.landing-page .lp-more {
+  margin-top: 32px;
+}
+
+.landing-page .empty-state .btn {
+  margin-top: 16px;
+}
+
+.lp-kos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+
+/* ----- Kartu ----- */
+.lp-kos-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--lp-card);
+  border: 1px solid var(--lp-line);
+  border-radius: 22px;
+  box-shadow: var(--lp-shadow-sm);
+  transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+}
+
+.lp-kos-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--lp-primary-softer);
+  box-shadow: 0 26px 44px -20px var(--lp-glow);
+}
+
+/* ----- Foto ----- */
+.lp-kos-media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  background: var(--lp-line);
+}
+
+.lp-kos-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.lp-kos-card:hover .lp-kos-img {
+  transform: scale(1.06);
+}
+
+/* chip "N kamar kosong" di atas foto */
+.landing-page .lp-kos-avail {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--lp-shadow-sm);
+}
+
+.lp-kos-avail::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+}
+
+/* ----- Isi kartu ----- */
+.lp-kos-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  padding: 22px;
+}
+
+.landing-page .lp-kos-body h3 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.lp-kos-body .btn {
+  margin-top: auto;
+}
+
+.lp-kos-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.lp-kos-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--lp-text);
+}
+
+.lp-kos-rating svg {
+  color: var(--lp-star);
+  fill: var(--lp-star);
+}
+
+.landing-page .lp-kos-loc {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 14px;
+  color: var(--lp-text-muted);
+}
+
+.lp-kos-loc svg {
+  flex-shrink: 0;
+  color: var(--lp-primary);
+}
+
+/* harga: "Mulai" kecil, nominal besar, "/bulan" kecil */
+.landing-page .lp-kos-price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 6px 0 8px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--lp-line);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--lp-primary);
+}
+
+.lp-kos-from,
+.lp-kos-price span {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--lp-text-muted);
+}
+
+/* ----- State error ----- */
+.lp-error {
+  padding: 36px 20px;
+  text-align: center;
+  border: 1px solid #fecaca;
+  border-radius: var(--lp-radius-lg);
+  background: var(--lp-danger-bg);
+  color: #991b1b;
+}
+
+.landing-page .lp-error p {
+  font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+  .lp-kos-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .lp-kos-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+/* =====================================================================
+   7. TENTANG KAMI  (4 kartu fitur)
+   ===================================================================== */
+.landing-page .lp-section-alt {
+  background:
+    radial-gradient(50% 60% at 100% 0%, rgba(6, 182, 212, 0.08), transparent 70%),
+    var(--lp-card);
+  border-top: 1px solid var(--lp-line);
+  border-bottom: 1px solid var(--lp-line);
+}
+
+.lp-about-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.lp-about-card {
+  position: relative;
+  overflow: hidden;
+  padding: 30px 24px;
+  border: 1px solid var(--lp-line);
+  border-radius: 22px;
+  background: var(--lp-bg);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+
+/* garis aksen di sisi atas kartu, muncul saat hover */
+.lp-about-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--lp-gradient);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease;
+}
+
+.lp-about-card:hover {
+  transform: translateY(-6px);
+  background: var(--lp-card);
+  border-color: var(--lp-primary-softer);
+  box-shadow: var(--lp-shadow);
+}
+
+.lp-about-card:hover::before {
+  transform: scaleX(1);
+}
+
+.lp-about-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  margin-bottom: 18px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--lp-primary-softer), var(--lp-primary-soft));
+  color: var(--lp-primary);
+  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.lp-about-card:hover .lp-about-icon {
+  background: var(--lp-gradient);
+  color: #ffffff;
+  transform: rotate(-6deg) scale(1.05);
+}
+
+.landing-page .lp-about-card h3 {
+  margin-bottom: 10px;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.landing-page .lp-about-card p {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--lp-text-muted);
+}
+
+@media (max-width: 1024px) {
+  .lp-about-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .lp-about-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =====================================================================
+   8. FOOTER  (latar gelap, 3 kolom)
+   ===================================================================== */
+.lp-footer {
+  position: relative;
+  padding: 76px 0 28px;
+  background:
+    radial-gradient(50% 80% at 0% 0%, rgba(20, 184, 166, 0.16), transparent 70%),
+    var(--lp-footer-bg);
+  color: #cbd5e1;
+  scroll-margin-top: var(--lp-navbar-height);
+}
+
+/* garis gradient tipis di tepi atas footer */
+.lp-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--lp-gradient);
+}
+
+.lp-footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 48px;
+}
+
+.landing-page .lp-footer h3 {
+  margin-bottom: 18px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.lp-footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+}
+
+.landing-page .lp-footer-about {
+  max-width: 340px;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: #94a3b8;
+}
+
+.lp-footer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14.5px;
+}
+
+.lp-footer-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.lp-footer-list svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: #5eead4;
+}
+
+.landing-page .lp-footer a {
+  color: #cbd5e1;
+  transition: color 0.2s ease;
+}
+
+.landing-page .lp-footer a:hover {
+  color: #5eead4;
+}
+
+.landing-page .lp-footer a:focus-visible {
+  outline-color: #5eead4;
+}
+
+.landing-page .lp-footer-copy {
+  margin: 48px 0 0;
+  padding-top: 24px;
+  border-top: 1px solid #1e293b;
+  font-size: 13px;
+  text-align: center;
+  color: #94a3b8;
+}
+
+@media (max-width: 768px) {
+  .lp-footer {
+    padding: 48px 0 calc(28px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .lp-footer-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* =====================================================================
+   9. KURANGI GERAKAN  (untuk pengguna yang mematikan animasi di perangkatnya)
+   ===================================================================== */
+@media (prefers-reduced-motion: reduce) {
+
+  .landing-page .btn,
+  .lp-navbar,
+  .landing-page .lp-nav-link,
+  .lp-search,
+  .lp-carousel-track,
+  .lp-carousel-btn,
+  .lp-dot::before,
+  .lp-kos-card,
+  .lp-kos-img,
+  .lp-about-card,
+  .lp-about-card::before,
+  .lp-about-icon,
+  .landing-page .lp-footer a {
+    transition: none;
+  }
+
+  .lp-hero-head,
+  .lp-search,
+  .lp-carousel,
+  .lp-nav-panel.open,
+  .landing-page .lp-skeleton {
+    animation: none;
+  }
+
+  .landing-page .btn-primary:hover:not(:disabled),
+  .lp-kos-card:hover,
+  .lp-kos-card:hover .lp-kos-img,
+  .lp-about-card:hover,
+  .lp-about-card:hover .lp-about-icon {
+    transform: none;
+  }
+
+  .lp-carousel-btn:hover {
+    transform: translateY(-50%);
+  }
+}

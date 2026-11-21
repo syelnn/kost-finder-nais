@@ -55,8 +55,8 @@ async function listKos(req, res) {
     `SELECT v.*,
             (SELECT f.path_foto FROM foto_kos f WHERE f.kos_id = v.kos_id ORDER BY f.foto_id LIMIT 1) AS foto,
             (SELECT COUNT(*) FROM foto_kos f WHERE f.kos_id = v.kos_id)::int AS jumlah_foto,
-            (SELECT COUNT(*) FROM booking b JOIN kamar km ON km.kamar_id = b.kamar_id
-              WHERE km.kos_id = v.kos_id AND b.status_booking = 'Menunggu')::int AS booking_menunggu
+            (SELECT COUNT(*) FROM booking b
+              WHERE b.kos_id = v.kos_id AND b.status_booking = 'Menunggu')::int AS booking_menunggu
        FROM v_kos_ringkas v
       WHERE v.owner_id = $1
       ORDER BY v.kos_id DESC`,
@@ -201,6 +201,7 @@ async function listKamar(req, res) {
   const { rows } = await query(
     `SELECT km.*,
             EXISTS (SELECT 1 FROM booking b WHERE b.kamar_id = km.kamar_id
+                     AND b.tipe_booking = 'sewa'
                      AND b.status_booking IN ('Menunggu', 'Disetujui')) AS ada_booking_aktif
        FROM kamar km WHERE km.kos_id = $1
       ORDER BY km.no_kamar`,
@@ -239,7 +240,7 @@ async function updateKamar(req, res) {
     let newStatus = current.status_kamar;
     if (status_kamar && status_kamar !== current.status_kamar) {
       const aktif = await client.query(
-        `SELECT 1 FROM booking WHERE kamar_id = $1 AND status_booking IN ('Menunggu', 'Disetujui')`,
+        `SELECT 1 FROM booking WHERE kamar_id = $1 AND tipe_booking = 'sewa' AND status_booking IN ('Menunggu', 'Disetujui')`,
         [current.kamar_id]
       );
       if (current.status_kamar === 'Dalam Booking' || aktif.rowCount) {
@@ -272,26 +273,30 @@ async function deleteKamar(req, res) {
 // ======================== BOOKING ========================
 async function listBooking(req, res) {
   await autoSelesaiSafe();
-  const { status, kos_id: kosId } = req.validQuery;
+  const { status, tipe, kos_id: kosId } = req.validQuery;
   const params = [req.user.user_id];
   let where = 'WHERE k.owner_id = $1';
   if (status) {
     params.push(status);
     where += ` AND b.status_booking = $${params.length}`;
   }
+  if (tipe) {
+    params.push(tipe);
+    where += ` AND b.tipe_booking = $${params.length}`;
+  }
   if (kosId) {
     params.push(kosId);
     where += ` AND k.kos_id = $${params.length}`;
   }
   const { rows } = await query(
-    `SELECT b.booking_id, b.tanggal_survey, b.status_booking, b.dibuat_pada,
+    `SELECT b.booking_id, b.tipe_booking, b.tanggal_survey, b.status_booking, b.dibuat_pada,
             km.kamar_id, km.no_kamar, km.tipe_kamar, km.harga, km.status_kamar,
             k.kos_id, k.nama_kos,
             u.user_id, u.nama AS nama_user, u.email AS email_user, u.no_wa AS no_wa_user,
             (r.review_id IS NOT NULL) AS sudah_review, r.rating
        FROM booking b
-       JOIN kamar km ON km.kamar_id = b.kamar_id
-       JOIN kos k ON k.kos_id = km.kos_id
+       JOIN kos k ON k.kos_id = b.kos_id
+       LEFT JOIN kamar km ON km.kamar_id = b.kamar_id
        JOIN "user" u ON u.user_id = b.user_id
        LEFT JOIN review r ON r.booking_id = b.booking_id
        ${where}
@@ -304,12 +309,11 @@ async function listBooking(req, res) {
 async function prosesBooking(req, res, statusBaru) {
   const result = await withTransaction(async (client) => {
     const { rows } = await client.query(
-      `SELECT b.booking_id, b.status_booking, b.kamar_id, k.owner_id
+      `SELECT b.booking_id, b.tipe_booking, b.status_booking, b.kamar_id, k.owner_id
          FROM booking b
-         JOIN kamar km ON km.kamar_id = b.kamar_id
-         JOIN kos k ON k.kos_id = km.kos_id
+         JOIN kos k ON k.kos_id = b.kos_id
         WHERE b.booking_id = $1
-        FOR UPDATE OF b, km`,
+        FOR UPDATE OF b`,
       [req.params.id]
     );
     if (!rows.length) throw new AppError(404, 'Booking tidak ditemukan.');
@@ -318,22 +322,70 @@ async function prosesBooking(req, res, statusBaru) {
     if (bk.status_booking !== 'Menunggu') {
       throw new AppError(409, `Booking sudah berstatus ${bk.status_booking} dan tidak dapat diproses lagi.`);
     }
+    if (bk.tipe_booking === 'sewa' && bk.kamar_id) {
+      await client.query('SELECT kamar_id FROM kamar WHERE kamar_id = $1 FOR UPDATE', [bk.kamar_id]);
+    }
     const upd = await client.query(
       'UPDATE booking SET status_booking = $2 WHERE booking_id = $1 RETURNING *',
       [bk.booking_id, statusBaru]
     );
-    const statusKamar = await syncRoomStatus(client, bk.kamar_id);
+    // Booking survey TIDAK mengubah status kamar; hanya booking sewa yang menyinkronkan kamar.
+    const statusKamar = bk.tipe_booking === 'sewa' ? await syncRoomStatus(client, bk.kamar_id) : null;
+    return { ...upd.rows[0], status_kamar: statusKamar };
+  });
+  let msg;
+  if (result.tipe_booking === 'survey') {
+    msg =
+      statusBaru === 'Disetujui'
+        ? 'Booking survey disetujui. Status kamar tidak berubah.'
+        : 'Booking survey ditolak.';
+  } else {
+    msg =
+      statusBaru === 'Disetujui'
+        ? 'Booking kamar disetujui. Status kamar menjadi Terisi.'
+        : 'Booking kamar ditolak. Status kamar kembali Kosong.';
+  }
+  return ok(res, result, msg);
+}
+
+const setujuiBooking = (req, res) => prosesBooking(req, res, 'Disetujui');
+const tolakBooking = (req, res) => prosesBooking(req, res, 'Ditolak');
+
+/** Tandai booking 'Disetujui' menjadi 'Selesai' secara manual; kamar kembali 'Kosong' khusus booking sewa. */
+async function selesaiBooking(req, res) {
+  const result = await withTransaction(async (client) => {
+    const { rows } = await client.query(
+      `SELECT b.booking_id, b.tipe_booking, b.status_booking, b.kamar_id, k.owner_id
+         FROM booking b
+         JOIN kos k ON k.kos_id = b.kos_id
+        WHERE b.booking_id = $1
+        FOR UPDATE OF b`,
+      [req.params.id]
+    );
+    if (!rows.length) throw new AppError(404, 'Booking tidak ditemukan.');
+    const bk = rows[0];
+    if (bk.owner_id !== req.user.user_id) throw new AppError(403, 'Anda tidak berhak memproses booking ini.');
+    if (bk.status_booking !== 'Disetujui') {
+      throw new AppError(409, `Hanya booking berstatus Disetujui yang dapat diselesaikan (status saat ini: ${bk.status_booking}).`);
+    }
+    if (bk.tipe_booking === 'sewa' && bk.kamar_id) {
+      await client.query('SELECT kamar_id FROM kamar WHERE kamar_id = $1 FOR UPDATE', [bk.kamar_id]);
+    }
+    const upd = await client.query(
+      `UPDATE booking SET status_booking = 'Selesai' WHERE booking_id = $1 RETURNING *`,
+      [bk.booking_id]
+    );
+    const statusKamar = bk.tipe_booking === 'sewa' ? await syncRoomStatus(client, bk.kamar_id) : null;
     return { ...upd.rows[0], status_kamar: statusKamar };
   });
   return ok(
     res,
     result,
-    statusBaru === 'Disetujui' ? 'Booking disetujui. Status kamar menjadi Terisi.' : 'Booking ditolak. Status kamar kembali Kosong.'
+    result.tipe_booking === 'sewa'
+      ? 'Booking ditandai selesai. Status kamar kembali Kosong.'
+      : 'Booking survey ditandai selesai.'
   );
 }
-
-const setujuiBooking = (req, res) => prosesBooking(req, res, 'Disetujui');
-const tolakBooking = (req, res) => prosesBooking(req, res, 'Ditolak');
 
 // ======================== DASHBOARD ========================
 async function dashboard(req, res) {
@@ -347,7 +399,7 @@ async function dashboard(req, res) {
          (SELECT COUNT(*) FROM kamar km JOIN kos k ON k.kos_id = km.kos_id WHERE k.owner_id = $1)::int AS total_kamar,
          (SELECT COUNT(*) FROM kamar km JOIN kos k ON k.kos_id = km.kos_id
            WHERE k.owner_id = $1 AND km.status_kamar = 'Terisi')::int AS kamar_terisi,
-         (SELECT COUNT(*) FROM booking b JOIN kamar km ON km.kamar_id = b.kamar_id JOIN kos k ON k.kos_id = km.kos_id
+         (SELECT COUNT(*) FROM booking b JOIN kos k ON k.kos_id = b.kos_id
            WHERE k.owner_id = $1 AND b.status_booking = 'Menunggu')::int AS booking_menunggu,
          (SELECT COALESCE(SUM(km.harga), 0) FROM kamar km JOIN kos k ON k.kos_id = km.kos_id
            WHERE k.owner_id = $1 AND km.status_kamar = 'Terisi')::bigint AS potensi_pendapatan`,
@@ -370,7 +422,7 @@ async function dashboard(req, res) {
       6,
       'SUM(km.harga)',
       'booking b JOIN kamar km ON km.kamar_id = b.kamar_id JOIN kos k ON k.kos_id = km.kos_id',
-      `AND k.owner_id = $1 AND b.status_booking IN ('Disetujui', 'Selesai')`,
+      `AND k.owner_id = $1 AND b.tipe_booking = 'sewa' AND b.status_booking IN ('Disetujui', 'Selesai')`,
       [ownerId]
     ),
   ]);
@@ -410,6 +462,7 @@ module.exports = {
   listBooking,
   setujuiBooking,
   tolakBooking,
+  selesaiBooking,
   dashboard,
   getOwnedKos,
 };

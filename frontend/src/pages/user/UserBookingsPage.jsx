@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Star } from 'lucide-react';
 import api, { downloadFile, getErrorMessage, getFieldErrors } from '../../api/client';
 import AppLayout from '../../components/AppLayout';
-import { EmptyState, Modal, Spinner, StarRating, StatusBadge } from '../../components/Ui';
+import { EmptyState, Modal, Pagination, Spinner, StarRating, StatusBadge } from '../../components/Ui';
 import { useToast } from '../../context/ToastContext';
 import { formatRupiah, formatTanggal } from '../../utils/format';
 
@@ -12,6 +13,7 @@ export default function UserBookingsPage() {
 
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
   const [downloadingId, setDownloadingId] = useState(null);
 
   const [reviewModal, setReviewModal] = useState(null);
@@ -25,6 +27,7 @@ export default function UserBookingsPage() {
     try {
       const { data } = await api.get('/booking/saya');
       setBookings(data.data || []);
+      setPage(1);
     } catch (err) {
       showToast(getErrorMessage(err, 'Gagal memuat riwayat booking.'), 'error');
     } finally {
@@ -78,6 +81,9 @@ export default function UserBookingsPage() {
     }
   };
 
+  const pageSize = 10;
+  const paged = bookings.slice((page - 1) * pageSize, page * pageSize);
+
   return (
     <AppLayout>
       <div className="page-header">
@@ -103,75 +109,101 @@ export default function UserBookingsPage() {
             onAction={() => navigate('/peta')}
           />
         ) : (
-          <div className="table-responsive">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Nama Kos & Alamat</th>
-                  <th>Kamar & Harga</th>
-                  <th>Tanggal Survey/Sewa</th>
-                  <th>Status Booking</th>
-                  <th>Bukti & Review</th>
-                </tr>
-              </thead>
-              <tbody>
-                {bookings.map((b) => (
-                  <tr key={b.booking_id}>
-                    <td>#{b.booking_id}</td>
-                    <td>
-                      <Link to={`/kos/${b.kos_id}`}>
-                        <strong>{b.nama_kos}</strong>
-                      </Link>
-                      <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{b.alamat}</div>
-                    </td>
-                    <td>
-                      <strong>
-                        No. {b.no_kamar} - Tipe {b.tipe_kamar}
-                      </strong>
-                      <div style={{ fontSize: 12, color: 'var(--primary)', fontWeight: 600 }}>
-                        {formatRupiah(b.harga)}/bulan
-                      </div>
-                    </td>
-                    <td>{formatTanggal(b.tanggal_survey)}</td>
-                    <td>
-                      <StatusBadge status={b.status_booking} />
-                    </td>
-                    <td>
-                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-                        {['Disetujui', 'Selesai'].includes(b.status_booking) && (
-                          <button
-                            type="button"
-                            className="btn btn-ghost btn-sm"
-                            disabled={downloadingId === b.booking_id}
-                            onClick={() => handleDownloadBukti(b.booking_id)}
-                          >
-                            {downloadingId === b.booking_id ? 'Mengunduh...' : 'Unduh Bukti PDF'}
-                          </button>
-                        )}
-
-                        {b.bisa_review && (
-                          <button
-                            type="button"
-                            className="btn btn-primary btn-sm"
-                            onClick={() => openReviewModal(b)}
-                          >
-                            Beri Review
-                          </button>
-                        )}
-
-                        {b.review_id && (
-                          <span className="badge badge-teal" title={b.komentar || ''}>
-                            Sudah direview (★ {b.rating})
-                          </span>
-                        )}
-                      </div>
-                    </td>
+          <>
+            <div className="table-responsive">
+              <table className="table table-booking">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Jenis</th>
+                    <th>Nama Kos & Alamat</th>
+                    <th>Kamar & Harga</th>
+                    <th>Tanggal Survey/Sewa</th>
+                    <th>Status Booking</th>
+                    <th>Bukti & Review</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {paged.map((b) => {
+                    const isSurvey = b.tipe_booking === 'survey';
+                    return (
+                      <tr key={b.booking_id}>
+                        <td data-label="ID">#{b.booking_id}</td>
+                        <td data-label="Jenis">
+                          <StatusBadge status={isSurvey ? 'survey' : 'sewa'}>
+                            {isSurvey ? 'Survey' : 'Sewa'}
+                          </StatusBadge>
+                        </td>
+                        <td data-label="Nama Kos & Alamat" className="td-stack" title={b.nama_kos}>
+                          <Link to={`/kos/${b.kos_id}`}>
+                            <strong>{b.nama_kos}</strong>
+                          </Link>
+                          <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{b.alamat}</div>
+                        </td>
+                        <td data-label="Kamar & Harga">
+                          {b.no_kamar ? (
+                            <>
+                              <strong>
+                                No. {b.no_kamar} - Tipe {b.tipe_kamar}
+                              </strong>
+                              <div style={{ fontSize: 12, color: 'var(--primary)', fontWeight: 600 }}>
+                                {formatRupiah(b.harga)}/bulan
+                              </div>
+                            </>
+                          ) : (
+                            <span style={{ color: 'var(--text-muted)' }}>Survey Umum</span>
+                          )}
+                        </td>
+                        <td data-label="Tanggal Survey/Sewa">{formatTanggal(b.tanggal_survey)}</td>
+                        <td data-label="Status Booking">
+                          <StatusBadge status={b.status_booking} />
+                        </td>
+                        <td data-label="Aksi" className="td-aksi">
+                          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+                            {['Disetujui', 'Selesai'].includes(b.status_booking) && (
+                              <button
+                                type="button"
+                                className="btn btn-ghost btn-sm"
+                                disabled={downloadingId === b.booking_id}
+                                onClick={() => handleDownloadBukti(b.booking_id)}
+                              >
+                                {downloadingId === b.booking_id ? 'Mengunduh...' : 'Unduh Bukti PDF'}
+                              </button>
+                            )}
+
+                            {!isSurvey && b.bisa_review && (
+                              <button
+                                type="button"
+                                className="btn btn-primary btn-sm"
+                                onClick={() => openReviewModal(b)}
+                              >
+                                Beri Review
+                              </button>
+                            )}
+
+                            {!isSurvey && b.review_id && (
+                              <span
+                                className="badge badge-teal"
+                                title={b.komentar || ''}
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}
+                              >
+                                <span>Sudah direview</span>
+                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+                                  (<Star size={13} strokeWidth={2} fill="currentColor" style={{ color: '#f59e0b' }} aria-hidden="true" />
+                                  <span>{b.rating}</span>)
+                                </span>
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <Pagination page={page} totalItems={bookings.length} pageSize={pageSize} onPageChange={setPage} />
+          </>
         )}
       </div>
 

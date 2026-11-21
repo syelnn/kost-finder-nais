@@ -49,11 +49,11 @@ async function getBooking(user, filters) {
   const { where, p } = kosScope(user, filters, params);
   if (filters.statusBooking) where.push(`b.status_booking = ${p(filters.statusBooking)}`);
   const { rows } = await query(
-    `SELECT b.booking_id, v.nama_kos, v.wilayah, v.tipe_kos, km.no_kamar, km.tipe_kamar, km.harga,
+    `SELECT b.booking_id, b.tipe_booking, v.nama_kos, v.wilayah, v.tipe_kos, km.no_kamar, km.tipe_kamar, km.harga,
             u.nama AS nama_user, u.email AS email_user, b.tanggal_survey, b.status_booking, b.dibuat_pada
        FROM booking b
-       JOIN kamar km ON km.kamar_id = b.kamar_id
-       JOIN v_kos_ringkas v ON v.kos_id = km.kos_id
+       JOIN v_kos_ringkas v ON v.kos_id = b.kos_id
+       LEFT JOIN kamar km ON km.kamar_id = b.kamar_id
        JOIN "user" u ON u.user_id = b.user_id
       ${where.length ? `WHERE ${where.join(' AND ')}` : ''}
       ORDER BY b.dibuat_pada DESC`,
@@ -126,8 +126,8 @@ async function getLaporan(user, filters) {
       total_booking: booking.length,
       okupansi_persen: kamar.length ? Math.round((terisi / kamar.length) * 1000) / 10 : 0,
       estimasi_pendapatan: booking
-        .filter((b) => ['Disetujui', 'Selesai'].includes(b.status_booking))
-        .reduce((s, b) => s + Number(b.harga), 0),
+        .filter((b) => b.tipe_booking !== 'survey' && ['Disetujui', 'Selesai'].includes(b.status_booking))
+        .reduce((s, b) => s + Number(b.harga || 0), 0),
     },
     grafik: {
       kosPerWilayah: { labels: Object.keys(perWilayah), data: Object.values(perWilayah) },
@@ -185,7 +185,10 @@ async function getExportRows(jenis, user, filters) {
   if (jenis === 'kos') return getKos(user, filters);
   if (jenis === 'kamar') return getKamar(user, filters);
   const rows = await getBooking(user, filters);
-  return rows.map((r) => ({ ...r, kamar: `No. ${r.no_kamar} - ${r.tipe_kamar}` }));
+  return rows.map((r) => ({
+    ...r,
+    kamar: r.no_kamar ? `No. ${r.no_kamar} - ${r.tipe_kamar}` : 'Survey Umum',
+  }));
 }
 
 function describeFilter(filters) {

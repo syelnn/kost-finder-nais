@@ -4,19 +4,23 @@ const { query, withTransaction } = require('../config/db');
 const TODAY_WIB = "(now() AT TIME ZONE 'Asia/Jakarta')::date";
 
 /**
- * Sinkronisasi status kamar dari status booking aktif (satu-satunya sumber logika status kamar otomatis).
- *   ada booking Menunggu  -> 'Dalam Booking'
- *   ada booking Disetujui -> 'Terisi'
- *   tidak ada booking aktif (Ditolak / Selesai) -> 'Kosong'
+ * Sinkronisasi status kamar dari status booking SEWA aktif (satu-satunya sumber logika status kamar otomatis).
+ * Booking berjenis 'survey' TIDAK pernah mengubah atau mengunci status kamar.
+ *   ada booking sewa Menunggu  -> 'Dalam Booking'
+ *   ada booking sewa Disetujui -> 'Terisi'
+ *   tidak ada booking sewa aktif (Ditolak / Selesai) -> 'Kosong'
  * Wajib dipanggil di dalam transaksi yang sama dengan perubahan booking.
  * @param {import('pg').PoolClient} client
- * @param {number} kamarId
- * @returns {Promise<string>} status_kamar baru
+ * @param {number|null} kamarId
+ * @returns {Promise<string|null>} status_kamar baru
  */
 async function syncRoomStatus(client, kamarId) {
+  if (!kamarId) return null;
   const { rows } = await client.query(
     `SELECT status_booking FROM booking
-      WHERE kamar_id = $1 AND status_booking IN ('Menunggu', 'Disetujui')
+      WHERE kamar_id = $1
+        AND tipe_booking = 'sewa'
+        AND status_booking IN ('Menunggu', 'Disetujui')
       ORDER BY booking_id DESC LIMIT 1`,
     [kamarId]
   );
@@ -28,7 +32,8 @@ async function syncRoomStatus(client, kamarId) {
 }
 
 /**
- * Auto-Selesai: booking 'Disetujui' dengan tanggal_survey < hari ini (WIB) -> 'Selesai', kamar -> 'Kosong'.
+ * Auto-Selesai: booking 'Disetujui' dengan tanggal_survey < hari ini (WIB) -> 'Selesai'.
+ * Untuk booking 'sewa', kamar kembali 'Kosong'; untuk 'survey', status kamar tidak diubah.
  * Berjalan di satu transaksi. Mengembalikan jumlah booking yang diselesaikan.
  */
 async function autoSelesai() {
@@ -36,9 +41,9 @@ async function autoSelesai() {
     const { rows } = await client.query(
       `UPDATE booking SET status_booking = 'Selesai'
         WHERE status_booking = 'Disetujui' AND tanggal_survey < ${TODAY_WIB}
-        RETURNING booking_id, kamar_id`
+        RETURNING booking_id, kamar_id, tipe_booking`
     );
-    const kamarIds = [...new Set(rows.map((r) => r.kamar_id))];
+    const kamarIds = [...new Set(rows.filter((r) => r.tipe_booking === 'sewa' && r.kamar_id).map((r) => r.kamar_id))];
     for (const id of kamarIds) {
       await syncRoomStatus(client, id);
     }

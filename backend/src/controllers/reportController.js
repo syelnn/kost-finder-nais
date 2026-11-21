@@ -52,7 +52,7 @@ const BACKUP_COLUMNS = {
   fasilitas: ['fasilitas_id', 'nama_fasilitas'],
   kos_fasilitas: ['kos_id', 'fasilitas_id'],
   kamar: ['kamar_id', 'kos_id', 'no_kamar', 'tipe_kamar', 'harga', 'status_kamar'],
-  booking: ['booking_id', 'kamar_id', 'user_id', 'tanggal_survey', 'status_booking', 'dibuat_pada'],
+  booking: ['booking_id', 'kos_id', 'kamar_id', 'user_id', 'tipe_booking', 'tanggal_survey', 'status_booking', 'dibuat_pada'],
   review: ['review_id', 'booking_id', 'rating', 'komentar', 'dibuat_pada'],
 };
 const BACKUP_TABLES = Object.keys(BACKUP_COLUMNS);
@@ -69,18 +69,18 @@ async function backupRows(table, user) {
   const sqlOwner = {
     user: `SELECT ${sel('t')} FROM "user" t
             WHERE t.user_id = $1
-               OR t.user_id IN (SELECT b.user_id FROM booking b JOIN kamar km ON km.kamar_id = b.kamar_id
-                                  JOIN kos k ON k.kos_id = km.kos_id WHERE k.owner_id = $1)
+               OR t.user_id IN (SELECT b.user_id FROM booking b
+                                  JOIN kos k ON k.kos_id = b.kos_id WHERE k.owner_id = $1)
             ORDER BY 1`,
     kos: `SELECT ${sel('t')} FROM kos t WHERE t.owner_id = $1 ORDER BY 1`,
     foto_kos: `SELECT ${sel('t')} FROM foto_kos t JOIN kos k ON k.kos_id = t.kos_id WHERE k.owner_id = $1 ORDER BY 1`,
     fasilitas: `SELECT ${sel('t')} FROM fasilitas t WHERE $1::int IS NOT NULL ORDER BY 1`,
     kos_fasilitas: `SELECT ${sel('t')} FROM kos_fasilitas t JOIN kos k ON k.kos_id = t.kos_id WHERE k.owner_id = $1 ORDER BY 1, 2`,
     kamar: `SELECT ${sel('t')} FROM kamar t JOIN kos k ON k.kos_id = t.kos_id WHERE k.owner_id = $1 ORDER BY 1`,
-    booking: `SELECT ${sel('t')} FROM booking t JOIN kamar km ON km.kamar_id = t.kamar_id
-               JOIN kos k ON k.kos_id = km.kos_id WHERE k.owner_id = $1 ORDER BY 1`,
+    booking: `SELECT ${sel('t')} FROM booking t
+               JOIN kos k ON k.kos_id = t.kos_id WHERE k.owner_id = $1 ORDER BY 1`,
     review: `SELECT ${sel('t')} FROM review t JOIN booking b ON b.booking_id = t.booking_id
-              JOIN kamar km ON km.kamar_id = b.kamar_id JOIN kos k ON k.kos_id = km.kos_id
+              JOIN kos k ON k.kos_id = b.kos_id
              WHERE k.owner_id = $1 ORDER BY 1`,
   };
   const { rows } = await query(sqlOwner[table], [id]);

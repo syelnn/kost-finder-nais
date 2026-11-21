@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { StatusBadge } from './Ui';
 import Sidebar from './Sidebar';
+import BrandLogo from './BrandLogo';
+import AccountMenu from './AccountMenu';
 import CommandPalette from './CommandPalette';
 import { Search, ExternalLink, PanelLeft } from 'lucide-react';
 // Kerangka & komponen tampilan panel (dipakai Admin DAN Owner, lihat catatan di bawah).
@@ -25,8 +26,9 @@ const SIDEBAR_COLLAPSED_KEY = 'kosfinder.admin.sidebarCollapsed';
 const DESKTOP_QUERY = '(min-width: 1025px)';
 
 export default function AppLayout({ children, fullHeight = false }) {
-  const { user, logout } = useAuth();
+  const { user, loading: authLoading, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(() => {
     try {
@@ -96,7 +98,34 @@ export default function AppLayout({ children, fullHeight = false }) {
     navigate('/login');
   };
 
-  if (!user) return children;
+  if (!user) {
+    // Kerangka ringan untuk tamu (mis. detail kos publik /kos/:id).
+    const from = `${location.pathname}${location.search}`;
+    return (
+      <div className="user-shell">
+        <header className="top-navbar">
+          <div className="top-navbar-inner">
+            <Link to="/" className="brand-logo">
+              <BrandLogo />
+            </Link>
+            <div className="top-nav-user">
+              {authLoading ? null : (
+                <>
+                  <Link to="/login" state={{ from }} className="btn btn-primary btn-sm">
+                    Masuk
+                  </Link>
+                  <Link to="/register" state={{ from }} className="btn btn-secondary btn-sm guest-register-btn">
+                    Daftar
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        </header>
+        <main className={fullHeight ? 'user-main-full' : 'user-main'}>{children}</main>
+      </div>
+    );
+  }
 
   const isPendingOwner = user.role === 'Owner' && user.status_verifikasi === 'Menunggu';
 
@@ -106,8 +135,7 @@ export default function AppLayout({ children, fullHeight = false }) {
         <header className="top-navbar">
           <div className="top-navbar-inner">
             <NavLink to="/peta" className="brand-logo">
-              <span className="brand-mark">⌂</span>
-              <span>Kos Nais</span>
+              <BrandLogo />
             </NavLink>
             <nav className="top-nav-links" aria-label="Menu Pencari Kos">
               {USER_MENUS.map((m) => (
@@ -121,13 +149,7 @@ export default function AppLayout({ children, fullHeight = false }) {
               ))}
             </nav>
             <div className="top-nav-user">
-              <span className="user-pill">
-                <strong>{user.nama}</strong>
-                <StatusBadge status={user.role}>Pencari Kos</StatusBadge>
-              </span>
-              <button type="button" className="btn btn-secondary btn-sm" onClick={handleLogout}>
-                Keluar
-              </button>
+              <AccountMenu user={user} onLogout={handleLogout} />
             </div>
           </div>
         </header>

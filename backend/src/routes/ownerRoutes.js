@@ -105,6 +105,7 @@ router.get(
   validate({
     query: z.object({
       status: optionalEnum(['Menunggu', 'Disetujui', 'Ditolak', 'Selesai'], 'Status booking tidak valid.'),
+      tipe: optionalEnum(['survey', 'sewa'], 'Jenis booking tidak valid.'),
       kos_id: z.preprocess((v) => (v === '' ? undefined : v), z.coerce.number().int().positive('Kos tidak valid.').optional()),
     }),
   }),
@@ -112,6 +113,7 @@ router.get(
 );
 router.patch('/owner/booking/:id/setujui', validate({ params: idParam }), asyncHandler(ctrl.setujuiBooking));
 router.patch('/owner/booking/:id/tolak', validate({ params: idParam }), asyncHandler(ctrl.tolakBooking));
+router.patch('/owner/booking/:id/selesai', validate({ params: idParam }), asyncHandler(ctrl.selesaiBooking));
 
 // Dashboard
 router.get('/owner/dashboard', asyncHandler(ctrl.dashboard));

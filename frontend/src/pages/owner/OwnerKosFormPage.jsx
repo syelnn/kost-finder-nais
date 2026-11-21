@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import api, { getErrorMessage, getFieldErrors } from '../../api/client';
 import AppLayout from '../../components/AppLayout';
 import LocationPickerMap from '../../components/LocationPickerMap';
+import AddressAutocomplete from '../../components/AddressAutocomplete';
 import { KosImage, Modal, Spinner } from '../../components/Ui';
 import { useToast } from '../../context/ToastContext';
 import { DoorOpen, Trash2, Upload, Save, X } from 'lucide-react';
@@ -77,6 +78,17 @@ export default function OwnerKosFormPage() {
   const handleMapSelect = (lat, lng) => {
     setForm((prev) => ({ ...prev, latitude: lat, longitude: lng }));
     setErrors((prev) => ({ ...prev, latitude: undefined, longitude: undefined }));
+  };
+
+  const handleLocationFromAddress = ({ lat, lng }) => {
+    setForm((prev) => ({ ...prev, latitude: lat, longitude: lng }));
+    setErrors((prev) => ({ ...prev, latitude: undefined, longitude: undefined }));
+  };
+
+  const handleReverseGeocode = (suggestedAddress) => {
+    setForm((prev) => ({ ...prev, alamat: suggestedAddress }));
+    setErrors((prev) => ({ ...prev, alamat: undefined }));
+    showToast('Alamat berhasil diambil dari titik peta.', 'info');
   };
 
   const handleFileChange = (e) => {
@@ -226,12 +238,16 @@ export default function OwnerKosFormPage() {
 
           <div className="form-group">
             <label htmlFor="kos-alamat">Alamat Lengkap (Format: Jalan, Kecamatan, Kota/Kabupaten)</label>
-            <textarea
+            <AddressAutocomplete
               id="kos-alamat"
-              className={`form-control ${errors.alamat ? 'is-invalid' : ''}`}
-              placeholder="Contoh: Jl. Dipati Ukur No. 21, Kecamatan Coblong, Kota Bandung"
               value={form.alamat}
-              onChange={(e) => setForm((p) => ({ ...p, alamat: e.target.value }))}
+              onChange={(val) => {
+                setForm((p) => ({ ...p, alamat: val }));
+                setErrors((p) => ({ ...p, alamat: undefined }));
+              }}
+              onSelectLocation={handleLocationFromAddress}
+              error={errors.alamat}
+              placeholder="Contoh: Jl. Dipati Ukur No. 21, Kecamatan Coblong, Kota Bandung"
               required
             />
             <div className="field-hint">
@@ -246,6 +262,7 @@ export default function OwnerKosFormPage() {
               latitude={form.latitude}
               longitude={form.longitude}
               onSelect={handleMapSelect}
+              onReverseGeocode={handleReverseGeocode}
             />
             <div className="form-row" style={{ marginTop: 10 }}>
               <div>
@@ -377,7 +394,7 @@ export default function OwnerKosFormPage() {
             )}
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 20 }}>
+          <div className="owner-form-actions">
             <Link to="/owner/kos" className="btn btn-secondary">
               <X className="icon" />
               Batal

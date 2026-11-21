@@ -27,6 +27,17 @@
   --shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
   --header-height: 64px;
   color: var(--text);
+  min-height: 100dvh;
+  overflow-x: clip;
+}
+
+/* Gambar fluid di seluruh halaman User tanpa memengaruhi tile/ikon Leaflet */
+:where(.user-shell) img {
+  max-width: 100%;
+}
+
+.leaflet-container img {
+  max-width: none !important;
 }
 
 html,
@@ -305,36 +316,24 @@ body {
   font-weight: 700;
 }
 
-:where(.user-shell) .table-responsive {
-  width: 100%;
-  overflow-x: auto;
+.brand-logo-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 }
 
-:where(.user-shell) .table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
+.brand-logo-img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  display: block;
 }
 
-:where(.user-shell) .table th,
-:where(.user-shell) .table td {
-  padding: 12px 14px;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
-  vertical-align: middle;
-}
-
-:where(.user-shell) .table th {
-  background: #f8fafc;
-  font-weight: 700;
-  color: var(--text-muted);
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-:where(.user-shell) .table tbody tr:hover {
-  background: #f8fafc;
+@media (max-width: 768px) {
+  .brand-logo-img {
+    width: 32px;
+    height: 32px;
+  }
 }
 
 :where(.user-shell) .pagination {
@@ -438,56 +437,40 @@ body {
   margin-bottom: 8px;
 }
 
-:where(.user-shell) .star-rating {
+:where(.user-shell, .admin-shell) .star-rating {
   display: inline-flex;
-  gap: 2px;
+  align-items: center;
+  gap: 4px;
 }
 
-:where(.user-shell) .star-on {
+:where(.user-shell, .admin-shell) .star-on {
+  display: inline-flex;
+  align-items: center;
   color: #f59e0b;
 }
 
-:where(.user-shell) .star-off {
+:where(.user-shell, .admin-shell) .star-off {
+  display: inline-flex;
+  align-items: center;
   color: #cbd5e1;
 }
 
 :where(.user-shell) .star-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: none;
-  font-size: 26px;
   cursor: pointer;
-  padding: 2px 4px;
+  padding: 4px;
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: 6px;
 }
 
 :where(.user-shell) .custom-div-marker {
   background: transparent;
   border: none;
-}
-
-:where(.user-shell) .marker-pin {
-  width: 26px;
-  height: 26px;
-  border-radius: 50% 50% 50% 0;
-  transform: rotate(-45deg);
-  border: 3px solid #ffffff;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-  transition: transform 0.15s ease;
-}
-
-:where(.user-shell) .marker-pin:hover {
-  transform: rotate(-45deg) scale(1.15);
-}
-
-:where(.user-shell) .marker-green {
-  background: var(--success);
-}
-
-:where(.user-shell) .marker-gray {
-  background: #9ca3af;
-}
-
-:where(.user-shell) .marker-blue {
-  background: #2563eb;
 }
 
 @media (max-width: 768px) {
@@ -570,32 +553,205 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.user-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
+  flex-shrink: 0;
 }
 
 .user-main {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 24px 16px;
+  padding: 24px max(16px, env(safe-area-inset-right, 0px)) calc(28px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
 }
 
 .user-main-full {
-  height: calc(100vh - var(--header-height));
+  height: calc(100dvh - var(--header-height));
   overflow: hidden;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .user-main-full { height: auto; overflow: visible; }
-  .user-pill strong { display: none; }
+}
+
+@media (max-width: 768px) {
+  /* Menu navigasi User pindah ke dalam menu akun (AccountMenu) agar navbar tidak sesak. */
+  .top-navbar .top-nav-links { display: none; }
+  .user-main {
+    padding: 18px max(14px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px));
+  }
+  :where(.user-shell) .form-control {
+    font-size: 16px;
+    min-height: 44px;
+  }
+  :where(.user-shell) .btn-sm {
+    min-height: 44px;
+  }
+  :where(.user-shell) .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  :where(.user-shell) .page-header > .btn,
+  .kos-detail-back-btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 480px) {
-  .top-navbar-inner { padding: 0 10px; gap: 8px; }
-  .top-navbar .brand-logo span:last-child { display: none; }
+  .top-navbar-inner {
+    padding: 0 max(10px, env(safe-area-inset-right, 0px)) 0 max(10px, env(safe-area-inset-left, 0px));
+    gap: 8px;
+  }
+  .top-navbar .brand-logo .brand-logo-text { display: none; }
+  .kos-detail-gallery {
+    grid-template-columns: 1fr;
+  }
+  .kos-detail-photo {
+    height: 200px;
+  }
+}
+
+/* ---------- Detail Kos (publik, User, & mode pratinjau Owner/Admin) ---------- */
+.kos-detail-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.kos-detail-photo {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+  background: #e2e8f0;
+}
+
+.kos-detail-single {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.kos-readonly-note {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: #e0f2fe;
+  border: 1px solid #bae6fd;
+  color: #0369a1;
+  font-size: 14px;
+}
+
+.kos-guest-booking {
+  padding: 16px;
+  border-radius: 10px;
+  background: var(--primary-50, #f0fdfa);
+  border: 1px solid var(--primary-100, #ccfbf1);
+}
+
+/* Segmented control jenis booking (Booking Survey vs Booking Kamar) */
+.booking-type-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 5px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  border: 1px solid var(--border);
+}
+
+.booking-type-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.booking-type-tab:hover {
+  color: var(--text);
+}
+
+.booking-type-tab.active {
+  background: #ffffff;
+  color: var(--primary);
+  border-color: var(--primary-100);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
+.booking-type-tab:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ---------- Detail Kos: header & ringkasan rapi ---------- */
+.kos-detail-head {
+  min-width: 0;
+}
+
+.kos-detail-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.kos-detail-title-row h1 {
+  margin: 0;
+}
+
+.kos-detail-address {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 8px 0 0;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.kos-detail-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin: 14px 0 22px;
+}
+
+.kos-detail-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #f8fafc;
+  min-width: 0;
+}
+
+.kos-detail-stat-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+}
+
+.kos-detail-stat-value {
+  font-size: 15px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.kos-detail-stat-price {
+  color: var(--primary);
 }

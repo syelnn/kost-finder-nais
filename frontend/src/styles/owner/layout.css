@@ -43,4 +43,17 @@
     min-height: 44px;
     justify-content: center;
   }
+
+  /* Halaman Kamar & Booking Owner di HP: input/select filter & tombol aksi full-width (>= 44px) */
+  .owner-shell .page-header .page-actions {
+    width: 100%;
+  }
+
+  .owner-shell .page-header .page-actions .btn,
+  .owner-shell .page-header .page-actions .form-control,
+  .owner-shell .owner-kamar-submit {
+    width: 100%;
+    min-height: 44px;
+    justify-content: center;
+  }
 }

@@ -1,0 +1,26 @@
+/* ==== Global Marker Leaflet (marker-icon-2x.png) & Legenda ====
+   Ikon dasar Leaflet berwarna biru; varian warna dibedakan lewat CSS filter pada className.
+   Bayangan marker (.leaflet-marker-shadow) tidak ikut terfilter. */
+
+.leaflet-marker-icon.marker-available,
+.legend-marker-img.marker-available {
+  filter: hue-rotate(-90deg) saturate(1.5) brightness(0.96);
+}
+
+.leaflet-marker-icon.marker-full,
+.legend-marker-img.marker-full {
+  filter: grayscale(1) brightness(1.1);
+}
+
+.leaflet-marker-icon.marker-reference,
+.legend-marker-img.marker-reference {
+  filter: drop-shadow(0 2px 5px rgba(37, 99, 235, 0.45));
+}
+
+.legend-marker-img {
+  width: 14px;
+  height: 23px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}

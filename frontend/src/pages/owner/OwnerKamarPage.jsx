@@ -209,7 +209,7 @@ export default function OwnerKamarPage() {
               </select>
             </div>
           </div>
-          <button type="submit" className="btn btn-primary" disabled={saving}>
+          <button type="submit" className="btn btn-primary owner-kamar-submit" disabled={saving}>
             {!saving && <Plus className="icon" />}
             {saving ? 'Menyimpan...' : 'Tambah Kamar'}
           </button>

@@ -1,0 +1,213 @@
+/* ==== Menu akun (AccountMenu.jsx) — dipakai Landing & navbar User ====
+   Warna ditulis langsung (tidak bergantung variabel tema halaman) supaya tampil sama di mana pun. */
+.acct {
+  position: relative;
+  font-family: inherit;
+}
+
+.acct .acct-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 230px;
+  min-height: 44px;
+  padding: 4px 12px 4px 4px;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #0f172a;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.acct .acct-trigger:hover {
+  border-color: #99f6e4;
+  background: #f0fdfa;
+}
+.acct .acct-trigger:focus-visible {
+  outline: 3px solid #5eead4;
+  outline-offset: 2px;
+}
+.acct.is-open .acct-trigger {
+  border-color: #0f766e;
+  box-shadow: 0 0 0 3px #ccfbf1;
+}
+
+.acct .acct-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0f766e 0%, #0e7490 100%);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.acct .acct-avatar-lg {
+  width: 44px;
+  height: 44px;
+  font-size: 15px;
+}
+
+.acct .acct-name {
+  min-width: 0;
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.acct .acct-chevron {
+  flex-shrink: 0;
+  color: #64748b;
+  transition: transform 0.2s ease;
+}
+.acct.is-open .acct-chevron {
+  transform: rotate(180deg);
+}
+
+/* ---------- Kartu dropdown ---------- */
+.acct .acct-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 1100;
+  width: min(290px, calc(100vw - 24px));
+  padding: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px -16px rgba(15, 23, 42, 0.3), 0 4px 10px -4px rgba(15, 23, 42, 0.08);
+  transform-origin: top right;
+  animation: acct-pop 0.16s ease-out;
+}
+@keyframes acct-pop {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+.acct .acct-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 8px 12px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.acct .acct-head-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+}
+.acct .acct-head-name,
+.acct .acct-head-email {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.acct .acct-head-name {
+  font-size: 15px;
+  color: #0f172a;
+}
+.acct .acct-head-email {
+  font-size: 13px;
+  color: #64748b;
+}
+.acct .acct-badge {
+  display: inline-flex;
+  margin-top: 4px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: #ccfbf1;
+  color: #115e59;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.acct .acct-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #0f172a;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.acct .acct-item svg {
+  flex-shrink: 0;
+  color: #64748b;
+}
+.acct .acct-item:hover,
+.acct .acct-item:focus-visible {
+  background: #f0fdfa;
+  color: #0f766e;
+  text-decoration: none;
+  outline: none;
+}
+.acct .acct-item:hover svg,
+.acct .acct-item:focus-visible svg {
+  color: #0f766e;
+}
+.acct .acct-item:focus-visible {
+  box-shadow: inset 0 0 0 2px #5eead4;
+}
+
+.acct .acct-divider {
+  height: 1px;
+  margin: 6px 0;
+  background: #e2e8f0;
+}
+
+.acct .acct-danger,
+.acct .acct-danger svg {
+  color: #b91c1c;
+}
+.acct .acct-danger:hover,
+.acct .acct-danger:focus-visible {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.acct .acct-danger:hover svg,
+.acct .acct-danger:focus-visible svg {
+  color: #991b1b;
+}
+
+/* Layar kecil: pemicu cukup avatar (target sentuh tetap >= 44px) */
+@media (max-width: 768px) {
+  .acct .acct-trigger {
+    min-width: 44px;
+    padding: 3px;
+    justify-content: center;
+  }
+  .acct .acct-name,
+  .acct .acct-chevron {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .acct .acct-menu,
+  .acct .acct-chevron {
+    animation: none;
+    transition: none;
+  }
+}

@@ -6,7 +6,7 @@ const AuthContext = createContext(null);
 export function roleHomePath(role) {
   if (role === 'Admin') return '/admin/dashboard';
   if (role === 'Owner') return '/owner/dashboard';
-  return '/peta';
+  return '/';
 }
 
 export function AuthProvider({ children }) {

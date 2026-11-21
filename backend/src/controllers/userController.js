@@ -95,34 +95,83 @@ async function detailKos(req, res) {
 
 // ======================== BOOKING ========================
 async function createBooking(req, res) {
-  const { kamar_id: kamarId, tanggal_survey: tanggal } = req.body;
+  const { tipe_booking: tipeBooking = 'sewa', kos_id: kosIdInput, kamar_id: kamarIdInput, tanggal_survey: tanggal } = req.body;
   if (await isPastDate(tanggal)) {
-    throw new AppError(422, 'Tanggal survey tidak boleh sebelum hari ini.', {
-      tanggal_survey: 'Tanggal survey minimal hari ini.',
+    throw new AppError(422, 'Tanggal tidak boleh sebelum hari ini.', {
+      tanggal_survey: 'Tanggal minimal hari ini.',
     });
   }
   try {
+    if (tipeBooking === 'survey') {
+      const booking = await withTransaction(async (client) => {
+        let resolvedKosId = kosIdInput || null;
+        let resolvedKamarId = null;
+        let namaKos = null;
+        let noKamar = null;
+
+        if (kamarIdInput) {
+          const kmRes = await client.query(
+            `SELECT km.kamar_id, km.kos_id, km.no_kamar, k.status_verifikasi AS status_kos, k.nama_kos
+               FROM kamar km JOIN kos k ON k.kos_id = km.kos_id
+              WHERE km.kamar_id = $1`,
+            [kamarIdInput]
+          );
+          if (!kmRes.rows.length) throw new AppError(404, 'Kamar tidak ditemukan.');
+          const km = kmRes.rows[0];
+          if (resolvedKosId && km.kos_id !== resolvedKosId) {
+            throw new AppError(422, 'Kamar yang dipilih tidak sesuai dengan kos tujuan.', {
+              kamar_id: 'Kamar tidak berada di kos ini.',
+            });
+          }
+          if (km.status_kos !== 'Aktif') throw new AppError(404, 'Kos tidak ditemukan atau tidak aktif.');
+          resolvedKosId = km.kos_id;
+          resolvedKamarId = km.kamar_id;
+          namaKos = km.nama_kos;
+          noKamar = km.no_kamar;
+        } else {
+          const kosRes = await client.query(
+            `SELECT kos_id, nama_kos, status_verifikasi FROM kos WHERE kos_id = $1`,
+            [resolvedKosId]
+          );
+          if (!kosRes.rows.length || kosRes.rows[0].status_verifikasi !== 'Aktif') {
+            throw new AppError(404, 'Kos tidak ditemukan atau tidak aktif.');
+          }
+          namaKos = kosRes.rows[0].nama_kos;
+        }
+
+        // Booking survey TIDAK mengubah atau mengunci status kamar.
+        const ins = await client.query(
+          `INSERT INTO booking (kos_id, kamar_id, user_id, tipe_booking, tanggal_survey, status_booking)
+           VALUES ($1, $2, $3, 'survey', $4, 'Menunggu') RETURNING *`,
+          [resolvedKosId, resolvedKamarId, req.user.user_id, tanggal]
+        );
+        return { ...ins.rows[0], status_kamar: null, nama_kos: namaKos, no_kamar: noKamar };
+      });
+      return created(res, booking, 'Booking survey berhasil diajukan. Menunggu persetujuan pemilik kos.');
+    }
+
+    // tipe_booking === 'sewa': kamar wajib kosong dan langsung terkunci 'Dalam Booking'
     const booking = await withTransaction(async (client) => {
       const { rows } = await client.query(
-        `SELECT km.kamar_id, km.status_kamar, km.no_kamar, k.status_verifikasi AS status_kos, k.nama_kos
+        `SELECT km.kamar_id, km.kos_id, km.status_kamar, km.no_kamar, k.status_verifikasi AS status_kos, k.nama_kos
            FROM kamar km JOIN kos k ON k.kos_id = km.kos_id
           WHERE km.kamar_id = $1
           FOR UPDATE OF km`,
-        [kamarId]
+        [kamarIdInput]
       );
       if (!rows.length) throw new AppError(404, 'Kamar tidak ditemukan.');
       const kamar = rows[0];
       if (kamar.status_kos !== 'Aktif') throw new AppError(404, 'Kos tidak ditemukan atau tidak aktif.');
       if (kamar.status_kamar !== 'Kosong') throw new AppError(409, 'Kamar sudah dibooking.');
       const ins = await client.query(
-        `INSERT INTO booking (kamar_id, user_id, tanggal_survey, status_booking)
-         VALUES ($1, $2, $3, 'Menunggu') RETURNING *`,
-        [kamarId, req.user.user_id, tanggal]
+        `INSERT INTO booking (kos_id, kamar_id, user_id, tipe_booking, tanggal_survey, status_booking)
+         VALUES ($1, $2, $3, 'sewa', $4, 'Menunggu') RETURNING *`,
+        [kamar.kos_id, kamar.kamar_id, req.user.user_id, tanggal]
       );
-      const statusKamar = await syncRoomStatus(client, kamarId);
+      const statusKamar = await syncRoomStatus(client, kamar.kamar_id);
       return { ...ins.rows[0], status_kamar: statusKamar, nama_kos: kamar.nama_kos, no_kamar: kamar.no_kamar };
     });
-    return created(res, booking, 'Booking berhasil diajukan. Menunggu persetujuan pemilik kos.');
+    return created(res, booking, 'Booking kamar berhasil diajukan. Menunggu persetujuan pemilik kos.');
   } catch (err) {
     if (err.code === '23505') throw new AppError(409, 'Kamar sudah dibooking.');
     throw err;
@@ -132,15 +181,15 @@ async function createBooking(req, res) {
 async function myBookings(req, res) {
   await autoSelesaiSafe();
   const { rows } = await query(
-    `SELECT b.booking_id, b.tanggal_survey, b.status_booking, b.dibuat_pada,
+    `SELECT b.booking_id, b.tipe_booking, b.tanggal_survey, b.status_booking, b.dibuat_pada,
             km.kamar_id, km.no_kamar, km.tipe_kamar, km.harga, km.status_kamar,
             k.kos_id, k.nama_kos, k.alamat, k.status_verifikasi AS status_kos,
             o.nama AS nama_pemilik, o.no_wa AS no_wa_pemilik,
             r.review_id, r.rating, r.komentar,
-            (b.status_booking = 'Selesai' AND r.review_id IS NULL) AS bisa_review
+            (b.tipe_booking = 'sewa' AND b.status_booking = 'Selesai' AND r.review_id IS NULL) AS bisa_review
        FROM booking b
-       JOIN kamar km ON km.kamar_id = b.kamar_id
-       JOIN kos k ON k.kos_id = km.kos_id
+       JOIN kos k ON k.kos_id = b.kos_id
+       LEFT JOIN kamar km ON km.kamar_id = b.kamar_id
        JOIN "user" o ON o.user_id = k.owner_id
        LEFT JOIN review r ON r.booking_id = b.booking_id
       WHERE b.user_id = $1
@@ -155,12 +204,15 @@ async function createReview(req, res) {
   const { rating, komentar } = req.body;
   const review = await withTransaction(async (client) => {
     const { rows } = await client.query(
-      'SELECT booking_id, user_id, status_booking FROM booking WHERE booking_id = $1 FOR UPDATE',
+      'SELECT booking_id, user_id, tipe_booking, status_booking FROM booking WHERE booking_id = $1 FOR UPDATE',
       [req.params.id]
     );
     if (!rows.length) throw new AppError(404, 'Booking tidak ditemukan.');
     const bk = rows[0];
     if (bk.user_id !== req.user.user_id) throw new AppError(403, 'Anda hanya dapat mereview booking milik Anda.');
+    if (bk.tipe_booking !== 'sewa') {
+      throw new AppError(403, 'Review hanya tersedia untuk booking kamar (sewa), bukan booking survey.');
+    }
     if (bk.status_booking !== 'Selesai') {
       throw new AppError(403, 'Review hanya dapat diberikan setelah booking berstatus Selesai.');
     }

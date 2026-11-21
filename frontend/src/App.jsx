@@ -50,14 +50,8 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/kos/:id"
-        element={
-          <ProtectedRoute roles={['User']}>
-            <UserKosDetailPage />
-          </ProtectedRoute>
-        }
-      />
+      {/* Detail kos publik: tamu boleh melihat; aksi booking meminta login di dalam halaman. */}
+      <Route path="/kos/:id" element={<UserKosDetailPage />} />
       <Route
         path="/booking-saya"
         element={

@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Eye, EyeOff, Loader2, Lock, Mail } from 'lucide-react';
 import { useAuth, roleHomePath } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { getErrorMessage, getFieldErrors } from '../../api/client';
 import { safeFrom } from '../../components/ProtectedRoute';
+import AuthLayout from '../../components/AuthLayout';
 import '../../styles/auth/auth.css';
 
 const DUMMY_ACCOUNTS = [
-  { label: 'Admin', email: 'admin@kosfinder.id' },
   { label: 'Owner (Terverifikasi)', email: 'owner1@kosfinder.id' },
   { label: 'Owner (Menunggu)', email: 'owner3@kosfinder.id' },
   { label: 'Pencari Kos (User)', email: 'user1@kosfinder.id' },
@@ -21,6 +22,7 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
@@ -47,73 +49,90 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="auth-page">
-      <div className="card auth-card">
-        <div className="auth-header">
-          <Link to="/" className="brand-logo">
-            <span className="brand-mark">⌂</span>
-            <span>Kos Nais</span>
-          </Link>
-          <h1>Masuk ke Akun Anda</h1>
-          <p>Gunakan email dan password terdaftar untuk mengakses fitur sesuai peran.</p>
-        </div>
-
-        <form onSubmit={handleSubmit} noValidate>
-          <div className="form-group">
-            <label htmlFor="login-email">Email</label>
+    <AuthLayout
+      title="Masuk ke Akun Anda"
+      subtitle="Gunakan email dan password terdaftar untuk mengakses fitur sesuai peran."
+    >
+      <form onSubmit={handleSubmit} noValidate>
+        <div className="form-group">
+          <label htmlFor="login-email">Email</label>
+          <div className={`auth-input-wrap ${errors.email ? 'is-invalid' : ''}`}>
+            <Mail size={18} className="auth-input-icon" aria-hidden="true" />
             <input
               id="login-email"
               type="email"
-              className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+              className="auth-input"
               placeholder="nama@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
             />
-            {errors.email && <div className="field-error">{errors.email}</div>}
           </div>
+          {errors.email && <div className="field-error">{errors.email}</div>}
+        </div>
 
-          <div className="form-group">
-            <label htmlFor="login-password">Password</label>
+        <div className="form-group">
+          <label htmlFor="login-password">Password</label>
+          <div className={`auth-input-wrap ${errors.password ? 'is-invalid' : ''}`}>
+            <Lock size={18} className="auth-input-icon" aria-hidden="true" />
             <input
               id="login-password"
-              type="password"
-              className={`form-control ${errors.password ? 'is-invalid' : ''}`}
+              type={showPassword ? 'text' : 'password'}
+              className="auth-input auth-input-with-toggle"
               placeholder="Masukkan password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
             />
-            {errors.password && <div className="field-error">{errors.password}</div>}
+            <button
+              type="button"
+              className="auth-pwd-toggle"
+              aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
+              aria-pressed={showPassword}
+              onClick={() => setShowPassword((v) => !v)}
+            >
+              {showPassword ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
+            </button>
           </div>
-
-          <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>
-            {submitting ? 'Memverifikasi...' : 'Masuk'}
-          </button>
-        </form>
-
-        <div className="dummy-box">
-          <div className="dummy-title">Isi Cepat Akun Dummy (Password: Password123!)</div>
-          <div className="dummy-buttons">
-            {DUMMY_ACCOUNTS.map((a) => (
-              <button
-                key={a.email}
-                type="button"
-                className="btn btn-ghost btn-sm"
-                onClick={() => fillDummy(a.email)}
-              >
-                {a.label}
-              </button>
-            ))}
-          </div>
+          {errors.password && <div className="field-error">{errors.password}</div>}
         </div>
 
-        <p className="auth-switch">
-          Belum punya akun? <Link to="/register">Daftar sekarang</Link>
-        </p>
+        <button type="submit" className="btn btn-primary btn-block auth-submit-btn" disabled={submitting}>
+          {submitting ? (
+            <>
+              <Loader2 size={18} className="auth-spin" aria-hidden="true" />
+              <span>Memverifikasi...</span>
+            </>
+          ) : (
+            'Masuk'
+          )}
+        </button>
+      </form>
+
+      <div className="dummy-box">
+        <div className="dummy-title">Isi Cepat Akun Dummy (Password: Password123!)</div>
+        <div className="dummy-buttons">
+          {DUMMY_ACCOUNTS.map((a) => (
+            <button
+              key={a.email}
+              type="button"
+              className="btn btn-ghost btn-sm"
+              onClick={() => fillDummy(a.email)}
+            >
+              {a.label}
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
+
+      <p className="auth-switch">
+        Belum punya akun?{' '}
+        <Link to="/register" state={location.state}>
+          Daftar sekarang
+        </Link>
+      </p>
+    </AuthLayout>
   );
 }

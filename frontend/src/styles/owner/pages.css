@@ -90,26 +90,6 @@
   z-index: 0;
 }
 
-.owner-shell .custom-div-marker {
-  background: transparent;
-  border: none;
-}
-
-.owner-shell .marker-pin {
-  width: 26px;
-  height: 26px;
-  border: 3px solid #ffffff;
-  border-radius: 50% 50% 50% 0;
-  background: var(--success);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-  transform: rotate(-45deg);
-  transition: transform 0.15s ease;
-}
-
-.owner-shell .marker-pin:hover {
-  transform: rotate(-45deg) scale(1.15);
-}
-
 /* ---------- Checklist fasilitas ---------- */
 .owner-shell .checklist-grid {
   display: grid;
@@ -166,5 +146,184 @@
 
   .owner-shell .picker-map {
     height: 260px;
+  }
+}
+
+/* ---------- Address Autocomplete (T3) ---------- */
+.address-autocomplete-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.address-input-bar {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.btn-search-address {
+  height: 44px;
+  padding: 0 16px;
+  flex-shrink: 0;
+}
+
+.address-autocomplete-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 1050;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 6px 0;
+}
+
+.autocomplete-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.15s ease;
+}
+
+.autocomplete-item:last-child {
+  border-bottom: none;
+}
+
+.autocomplete-item:hover {
+  background: #f8fafc;
+}
+
+.autocomplete-item-icon {
+  color: var(--primary);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.autocomplete-item-name {
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.autocomplete-item-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.35;
+  margin-top: 3px;
+}
+
+.autocomplete-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #e0f2fe;
+  color: #0369a1;
+  margin-left: 6px;
+  display: inline-block;
+}
+
+.autocomplete-status-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.autocomplete-status-item.error {
+  color: #b45309;
+  background: #fffbeb;
+}
+
+.address-selected-feedback {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: #16a34a;
+  font-weight: 500;
+}
+
+.spin-animate {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Tombol aksi form Owner (sticky di bawah saat HP) ---------- */
+.owner-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .owner-shell .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .owner-shell .form-control {
+    font-size: 16px;
+    min-height: 44px;
+    max-width: 100% !important;
+  }
+
+  .owner-shell .picker-map {
+    height: 280px;
+  }
+
+  .owner-form-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 30;
+    margin: 20px -16px -16px;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+    background: rgba(255, 255, 255, 0.96);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -6px 18px rgba(15, 23, 42, 0.08);
+  }
+
+  .owner-form-actions .btn {
+    flex: 1 1 0;
+    min-height: 44px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .address-input-bar {
+    flex-direction: column;
+  }
+  .btn-search-address {
+    width: 100%;
+    min-height: 44px;
+    justify-content: center;
+  }
+  .owner-form-actions {
+    flex-direction: column-reverse;
+  }
+  .owner-form-actions .btn {
+    width: 100%;
   }
 }

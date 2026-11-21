@@ -517,7 +517,7 @@ export default function LaporanPage() {
                                   </div>
                                 </td>
                                 <td data-label="Kamar">
-                                  No. {b.no_kamar} - {b.tipe_kamar}
+                                  {b.no_kamar ? `No. ${b.no_kamar} - ${b.tipe_kamar}` : 'Survey Umum'}
                                 </td>
                                 <td data-label="Pencari Kos">{b.nama_user}</td>
                                 <td data-label="Tgl Survey">{formatTanggal(b.tanggal_survey)}</td>
