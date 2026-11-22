@@ -18,6 +18,7 @@ const USER_MENUS = [
   { to: '/peta', label: 'Cari Kos di Peta' },
   { to: '/booking-saya', label: 'Booking Saya' },
   { to: '/review-saya', label: 'Review Saya' },
+  { to: '/', label: 'Beranda' },
 ];
 
 // Kunci localStorage untuk mengingat sidebar terakhir dibuka/ditutup (Admin & Owner).
